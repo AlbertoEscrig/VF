@@ -51,7 +51,7 @@ do
 
   U -= grad(p);
   }
-  while (sum(mag(p)) > 1e-2); // Hay que iterar porque TSimetria es explícita
+while (sum(mag(p)) > 1e-2); // Hay que iterar porque TSimetria es explícita
 
 // ------------------------------------------------------------------------------ Campo de presiones
 
