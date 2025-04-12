@@ -9,6 +9,7 @@
 #pragma once
 
 import VF;
+import std;
 
 namespace VF
 {

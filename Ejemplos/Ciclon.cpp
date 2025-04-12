@@ -7,8 +7,6 @@
 // =================================================================================================
 
 #include "kEpsilon.h"
-import VF;
-import std;
 
 using namespace VF;
 using namespace std;
