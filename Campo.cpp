@@ -88,6 +88,9 @@ private:
   TTensor<d, r>
   Lap(TCelda<d> const &, TCara<d> const &, TTensor<d, r + 1u> const &) const;
 
+  TTensor<d, r>
+  LapT(TCelda<d> const &, TCara<d> const &, TTensor<d, r + 1u> const &) const;
+
 public:
   TCampo() = default;
 
@@ -372,21 +375,30 @@ return lapφ / Celda.V;
 
 template<std::size_t d, std::size_t r>
 TTensor<d, r>
+TCampo<d, r>::LapT(TCelda<d> const &Celda, TCara<d> const &Cara,
+                   TTensor<d, r + 1u> const &gradφT) const
+{
+if (Cara.EsCC()) [[unlikely]]
+  {
+  TVector<d> const nf = Cara.nf();
+  auto const [aP, b] = GradCoef(Cara);
+
+  return Cara.Sf & (gradφT + (aP * Eval(Celda) + b - (gradφT & nf)) * nf);
+  }
+return Cara.Sf & Cara.Interpola(gradφT, GradT(Cara.CeldaN()));
+}
+
+// =================================================================================================
+
+template<std::size_t d, std::size_t r>
+TTensor<d, r>
 TCampo<d, r>::LapT(TCelda<d> const &Celda) const requires (r == 1u)
 {
 TTensor<d, r + 1u> const gradφT = GradT(Celda);
 TTensor<d, r> lapφT = {};
 
 for (auto &Cara : Celda)
-  if (Cara.EsCC()) [[unlikely]]
-    {
-    TVector<d> const nf = Cara.nf();
-    auto const [aP, b] = GradCoef(Cara);
-
-    lapφT += Cara.Sf & (gradφT + (aP * Eval(Celda) + b - (gradφT & nf)) * nf);
-    }
-  else
-    lapφT += Cara.Sf & Cara.Interpola(gradφT, GradT(Cara.CeldaN()));
+  lapφT += LapT(Celda, Cara, gradφT);
 return lapφT / Celda.V;
 }
 
