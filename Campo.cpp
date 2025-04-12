@@ -162,7 +162,7 @@ public:
     { Copia(Campo); return *this; }
 
   TCampo
-  &operator =(TCampo &&Campo) noexcept
+  &operator =(TCampo &&Campo)
     { delete[] TensorPtr; TensorPtr = std::exchange(Campo.TensorPtr, nullptr); return *this; }
 
   TCampo
