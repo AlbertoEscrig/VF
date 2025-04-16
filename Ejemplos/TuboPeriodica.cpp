@@ -41,9 +41,7 @@ TCampoEscalar3D p;
 
 U.DefCC<TPeriodica>("inlet");
 U.DefCC<TPeriodica>("outlet");
-
 U.DefCC<TDirichlet>("wall");
-
 U.DefCC<TPeriodica>("xy plane", T);
 U.DefCC<TPeriodica>("xz plane", T.T());
 

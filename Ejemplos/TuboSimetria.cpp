@@ -36,7 +36,6 @@ TCampoEscalar3D p;
 // ------------------------------------------------------------------------- Condiciones de contorno
 
 U.DefCC<TDirichlet>("wall");
-
 U.DefCC<TSimetria>("symmetry");
 
 p.DefCC<TDirichlet>("inlet", Δp);

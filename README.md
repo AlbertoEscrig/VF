@@ -9,7 +9,9 @@ framework applied to transport phenomena problems.
 
 The library tries to mimic the mathematical language. For example,
 solving the momentum equation:
-$$\nabla·\mathbf{U}\mathbf{U}-\nu\nabla·\nabla\mathbf{U}=-\nabla p$$
+```math
+\nabla·\mathbf{U}\mathbf{U}-\nu\nabla·\nabla\mathbf{U}=-\nabla p
+```
 can be written:
 ```c++
 solve(div(U * U) - ν * lap(U) == -grad(p), U);

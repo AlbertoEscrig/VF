@@ -46,12 +46,11 @@ k.DefCC<TDirichlet>("inlet", k0);
 ε.DefCC<TDirichlet>("inlet", ε0);
 
 U.DefCC<TSimetria>("top");
-
 U.DefCC<TSimetria>("bottom");
 
-U.  DefCC<TDirichlet  >("aerofoil");
-k.  DefCC<TkWallFunc  >("aerofoil");
-ε.  DefCC<TεWallFunc  >("aerofoil", k);
+U.DefCC<TDirichlet>("aerofoil");
+k.DefCC<TkWallFunc>("aerofoil");
+ε.DefCC<TεWallFunc>("aerofoil", k);
 νEf.DefCC<TμEfWallFunc>("aerofoil", k, ν);
 
 p.DefCC<TDirichlet>("outlet");
