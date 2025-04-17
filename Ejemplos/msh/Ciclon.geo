@@ -18,7 +18,7 @@ c4 = newc; Curve(c4) = {p4, p1};
 Transfinite Curve{c1, c3} = 10 * cm / lc;
 Transfinite Curve{c2, c4} = 40 * cm / lc;
 
-cc = newll; Curve Loop(cc) = {c1, c2, c3, c4};
+cc = newcl; Curve Loop(cc) = {c1, c2, c3, c4};
 
 s1 = news; Plane Surface(s1) = {cc};
 

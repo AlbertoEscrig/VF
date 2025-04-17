@@ -3,28 +3,28 @@ SetFactory("OpenCASCADE");
 
 mm = 1e-3;
 
-P1 = newp; Point(P1) = {206 * mm, 0,0};
-P2 = newp; Point(P2) = {290 * mm, 0,0};
+P1 = newp; Point(P1) = {206 * mm, 0, 0};
+P2 = newp; Point(P2) = {290 * mm, 0, 0};
 P3 = newp; Point(P3) = {290 * mm, -33.25 * mm / 2, 0};
 P4 = newp; Point(P4) = {206 * mm, -50.8 * mm / 2, 0};
 
-L1 = newl; Curve(L1) = {P1, P2};
-L2 = newl; Curve(L2) = {P2, P3};
-L3 = newl; Curve(L3) = {P3, P4};
-L4 = newl; Curve(L4) = {P4, P1};
+L1 = newc; Curve(L1) = {P1, P2};
+L2 = newc; Curve(L2) = {P2, P3};
+L3 = newc; Curve(L3) = {P3, P4};
+L4 = newc; Curve(L4) = {P4, P1};
 
-LL1 = newll; Curve Loop(LL1) = {L1, L2, L3, L4};
+LL1 = newcl; Curve Loop(LL1) = {L1, L2, L3, L4};
 
 S1 = news; Plane Surface(S1) = {LL1};
 
 P5 = newp; Point(P5) = {290 * mm, 33.25 * mm / 2, 0};
 P6 = newp; Point(P6) = {206 * mm, 50.8 * mm / 2, 0};
 
-L5 = newl; Curve(L5) = {P2, P5};
-L6 = newl; Curve(L6) = {P5, P6};
-L7 = newl; Curve(L7) = {P6, P1};
+L5 = newc; Curve(L5) = {P2, P5};
+L6 = newc; Curve(L6) = {P5, P6};
+L7 = newc; Curve(L7) = {P6, P1};
 
-LL2 = newll; Curve Loop(LL2) = {L1, L5, L6, L7};
+LL2 = newcl; Curve Loop(LL2) = {L1, L5, L6, L7};
 
 S2 = news; Plane Surface(S2) = {LL2};
 

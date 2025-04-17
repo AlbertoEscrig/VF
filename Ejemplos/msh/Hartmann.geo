@@ -11,7 +11,7 @@ c2 = newc; Curve(c2) = {p2, p3};
 c3 = newc; Curve(c3) = {p3, p4};
 c4 = newc; Curve(c4) = {p4, p1};
 
-c = newll; Curve Loop(c) = {c1, c2, c3, c4};
+c = newcl; Curve Loop(c) = {c1, c2, c3, c4};
 s = news; Plane Surface(s) = {c};
 
 Transfinite Curve{c1, c3} = 500; 
