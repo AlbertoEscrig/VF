@@ -8,7 +8,7 @@ out[] = Extrude {10e-2, 0, 0} { Curve{out[1]}; Layers{100}; Recombine; };
 
 S1 = out[1];
 
-out[] = Extrude {{1, 0, 0}, {0, 0, 0}, Pi / 2 / 10} { Surface{out[1]}; Layers{1}; Recombine; };
+out[] = Extrude {{1, 0, 0}, {0, 0, 0}, Pi / 2 / 10} { Surface{S1}; Layers{1}; Recombine; };
 
 S2 = out[0];
 V1 = out[1];
