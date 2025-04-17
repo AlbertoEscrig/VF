@@ -32,7 +32,7 @@ Curve(15) = {11, 10};
 Curve Loop(9) = {9, -13, -12, -11};
 Plane Surface(9) = {9};
 
-Line Loop(11) = {7, 11, -15, -14};
+Curve Loop(11) = {7, 11, -15, -14};
 Plane Surface(10) = {11};
 
 Symmetry {1, 0, 0, 0} { Duplicata{ Surface{:}; } }

@@ -24,4 +24,3 @@ Physical Curve("inlet")  = {c4};
 Physical Curve("outlet") = {c2};
 
 Physical Surface("domain") = {s};
-

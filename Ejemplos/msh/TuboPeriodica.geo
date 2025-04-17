@@ -29,4 +29,3 @@ Physical Surface("xy plane") = {xyplane};
 Physical Surface("xz plane") = {xzplane};
 
 Physical Volume("domain") = {domain};
-
