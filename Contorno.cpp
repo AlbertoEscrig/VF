@@ -174,26 +174,6 @@ public:
 template<std::size_t d, std::size_t r>
 struct TEsCCExplicita<TPeriodica<d, r>> : std::true_type {};
 
-// =================================================================================================
-// ======================================================================================== TFuncion
-
-template<std::size_t d, std::size_t r>
-class TFuncion : public TCCBase<d, r>
-{
-private:
-  std::function<TTensor<d, r> (TCara<d> const &)> const Fn;
-
-public:
-  TFuncion() = delete;
-
-  TFuncion(std::function<TTensor<d, r> (TCara<d> const &)> const Fn_) :
-    Fn(Fn_) {}
-
-  std::tuple<double, TTensor<d, r>>
-  virtual Coef(TCara<d> const &Cara) const override
-    { return {0.0, Fn(Cara)}; }
-};
-
 // ======================================================================== IMPLEMENTACIÓN DE CLASES
 // ========================================================================================= TCCBase
 
