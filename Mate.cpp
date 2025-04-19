@@ -25,7 +25,7 @@ namespace VF
 struct TMin
 {
   double
-  static operator ()(double const lhs, double const rhs)
+  static inline operator ()(double const lhs, double const rhs)
     { return std::min(lhs, rhs); }
 };
 
@@ -35,7 +35,7 @@ struct TMin
 struct TMax
 {
   double
-  static operator ()(double const lhs, double const rhs)
+  static inline operator ()(double const lhs, double const rhs)
     { return std::max(lhs, rhs); }
 };
 
@@ -46,7 +46,7 @@ template<std::size_t d, std::size_t r>
 struct TMag
 {
   double
-  static operator ()(TTensor<d, r> const &Tensor)
+  static inline operator ()(TTensor<d, r> const &Tensor)
     { return mag(Tensor); }
 };
 
@@ -167,7 +167,7 @@ mag(T const &Expr)
   struct T##FN                                                                                     \
   {                                                                                                \
     double                                                                                         \
-    static operator ()(double const Escalar)                                                       \
+    static inline operator ()(double const Escalar)                                                \
       { return std::FN(Escalar); }                                                                 \
   };                                                                                               \
                                                                                                    \

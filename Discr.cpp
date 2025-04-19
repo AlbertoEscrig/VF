@@ -163,8 +163,7 @@ public:
 
 // ------------------------------------------------------------------------------------------ Amigos
 
-  template<std::size_t, std::size_t, typename>
-  friend class TLap;
+  friend class TLapBase<d, r - 1u>;
 };
 
 // =================================================================================================
@@ -207,6 +206,9 @@ protected:
   TLapBase(TCampo<d, r> const &φ_) :
     φ(φ_) {}
 
+  TLapBase(TGrad<d, r + 1u, TCampo<d, r>> const &Expr) :
+    φ(Expr.φ) {}
+
   std::tuple<double, double, TTensor<d, r>>
   Coef(TCara<d> const &, TTensor<d, r + 1u> const &) const;
 };
@@ -225,7 +227,7 @@ private:
 
 public:
   TLap(TExprBinaria<d, r + 1u, T, TGrad<d, r + 1u, TCampo<d, r>>, std::multiplies<>> const &Expr) :
-    TLapBase<d, r>(Expr.rhs.φ), Γ(Expr.lhs) {}
+    TLapBase<d, r>(Expr.rhs), Γ(Expr.lhs) {}
 
   TTensor<d, r>
   Eval(TCelda<d> const &Celda) const

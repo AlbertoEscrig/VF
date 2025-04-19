@@ -411,7 +411,7 @@ using TMalla3D = TMalla<3u>;
 
 template<>
 TVector<2u>
-TCara<2u>::Sf_() const
+inline TCara<2u>::Sf_() const
 {
 TVector<2u> const r = Punto(1u) - Punto(0u);
 
@@ -422,7 +422,7 @@ return {r[1u], -r[0u]};
 
 template<>
 TVector<3u>
-TCara<3u>::Sf_() const
+inline TCara<3u>::Sf_() const
 {
 TVector<3u> Sf = {};
 
@@ -435,14 +435,14 @@ return 0.5 * Sf;
 
 template<>
 TVector<2u>
-TCara<2u>::Cf_() const
+inline TCara<2u>::Cf_() const
   { return 0.5 * (Punto(0u) + Punto(1u)); }
 
 // =================================================================================================
 
 template<>
 TVector<3u>
-TCara<3u>::Cf_() const
+inline TCara<3u>::Cf_() const
 {
 TPunto<3u> const &Pto = Punto(0u);
 TVector<3u> Cf = {};
@@ -459,7 +459,7 @@ return Cf + Pto / 3.0;
 template<>                                                      /*    2                           */
 template<>                                                      /*    |`\                         */
 std::vector<TCara<2u>>                                          /*    |  `\                       */
-TCelda<2u>::CaraVec_<TCelda<2u>::TRIAN>() const                 /*    |    `\                     */
+inline TCelda<2u>::CaraVec_<TCelda<2u>::TRIAN>() const          /*    |    `\                     */
 {                                                               /*    |      `\                   */
 TVector const u = *PtoPtrVec[1u] - *PtoPtrVec[0u],              /*    |        `\                 */
               v = *PtoPtrVec[2u] - *PtoPtrVec[0u];              /*    0----------1                */
@@ -479,7 +479,7 @@ else
 template<>                                                      /*    3-----------2               */
 template<>                                                      /*    |           |               */
 std::vector<TCara<2u>>                                          /*    |           |               */
-TCelda<2u>::CaraVec_<TCelda<2u>::CUADR>() const                 /*    |           |               */
+inline TCelda<2u>::CaraVec_<TCelda<2u>::CUADR>() const          /*    |           |               */
 {                                                               /*    |           |               */
 TVector const u = *PtoPtrVec[1u] - *PtoPtrVec[0u],              /*    |           |               */
               v = *PtoPtrVec[2u] - *PtoPtrVec[0u];              /*    0-----------1               */
@@ -503,7 +503,7 @@ else
 template<>                                                      /*           ,/  |  `\            */
 template<>                                                      /*         ,/    '.   `\          */
 std::vector<TCara<3u>>                                          /*       ,/       |     `\        */
-TCelda<3u>::CaraVec_<TCelda<3u>::TETRA>() const                 /*     ,/         |       `\      */
+inline TCelda<3u>::CaraVec_<TCelda<3u>::TETRA>() const          /*     ,/         |       `\      */
 {                                                               /*    0-----------'.--------1     */
 return {{this, {PtoPtrVec[0u], PtoPtrVec[2u], PtoPtrVec[1u]}},  /*     `\.         |      ,/      */
         {this, {PtoPtrVec[1u], PtoPtrVec[2u], PtoPtrVec[3u]}},  /*        `\.      |    ,/        */
@@ -516,7 +516,7 @@ return {{this, {PtoPtrVec[0u], PtoPtrVec[2u], PtoPtrVec[1u]}},  /*     `\.      
 template<>                                                                    /* 3----------2     */
 template<>                                                                    /* |\         |\    */
 std::vector<TCara<3u>>                                                        /* | \        | \   */
-TCelda<3u>::CaraVec_<TCelda<3u>::HEXA>() const                                /* |  \       |  \  */
+inline TCelda<3u>::CaraVec_<TCelda<3u>::HEXA>() const                         /* |  \       |  \  */
 {                                                                             /* |   7------+---6 */
 return {{this, {PtoPtrVec[3u], PtoPtrVec[2u], PtoPtrVec[1u], PtoPtrVec[0u]}}, /* |   |      |   | */
         {this, {PtoPtrVec[4u], PtoPtrVec[5u], PtoPtrVec[6u], PtoPtrVec[7u]}}, /* 0---+------1   | */
@@ -532,7 +532,7 @@ return {{this, {PtoPtrVec[3u], PtoPtrVec[2u], PtoPtrVec[1u], PtoPtrVec[0u]}}, /*
 template<>                                                                     /*      ,/|`\      */
 template<>                                                                     /*    ,/  |  `\    */
 std::vector<TCara<3u>>                                                         /*  ,/    |    `\  */
-TCelda<3u>::CaraVec_<TCelda<3u>::CUÑA>() const                                 /* 4------+------5 */
+inline TCelda<3u>::CaraVec_<TCelda<3u>::CUÑA>() const                          /* 4------+------5 */
 {                                                                              /* |      |      | */
 return {{this, {PtoPtrVec[2u], PtoPtrVec[1u], PtoPtrVec[0u]}},                 /* |      |      | */
         {this, {PtoPtrVec[3u], PtoPtrVec[4u], PtoPtrVec[5u]}},                 /* |      0      | */
@@ -550,7 +550,7 @@ return {{this, {PtoPtrVec[2u], PtoPtrVec[1u], PtoPtrVec[0u]}},                 /
 template<>                                                      /*        ,/    .' |  \           */
 template<>                                                      /*      ,/      |  '.  \          */
 std::vector<TCara<3u>>                                          /*    ,/        |    |  \         */
-TCelda<3u>::CaraVec_<TCelda<3u>::PIRAM>() const                 /*   0---------.'----3   \        */
+inline TCelda<3u>::CaraVec_<TCelda<3u>::PIRAM>() const          /*   0---------.'----3   \        */
 {                                                               /*   `\        |      `\  \       */
 return {{this, {PtoPtrVec[0u], PtoPtrVec[1u], PtoPtrVec[4u]}},  /*    `\     .'        `\  \      */
         {this, {PtoPtrVec[1u], PtoPtrVec[2u], PtoPtrVec[4u]}},  /*      `\   |           `\ \     */
@@ -563,7 +563,7 @@ return {{this, {PtoPtrVec[0u], PtoPtrVec[1u], PtoPtrVec[4u]}},  /*    `\     .' 
 
 template<>
 std::vector<TCara<2u>>
-TCelda<2u>::CaraVec_() const
+inline TCelda<2u>::CaraVec_() const
 {
 switch (Tipo)
   {
@@ -577,7 +577,7 @@ switch (Tipo)
 
 template<>
 std::vector<TCara<3u>>
-TCelda<3u>::CaraVec_() const
+inline TCelda<3u>::CaraVec_() const
 {
 switch (Tipo)
   {
