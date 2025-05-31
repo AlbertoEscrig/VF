@@ -30,15 +30,16 @@ template<std::size_t d, std::size_t r>
 class TCampo : public TExprBase<TCampo<d, r>>
 {
 private:
-  using TCCPtr = std::unique_ptr<TCCBase<d, r>>;
+  using TTensorPtr = std::unique_ptr<TTensor<d, r>[]>;
+  using TCCPtr     = std::unique_ptr<TCCBase<d, r>>;
 
 // ------------------------------------------------------------------------------------------- Datos
 
 private:
-  std::size_t const   NCelda     = TMalla<d>::NCelda();
-  TTensor<d, r>       *TensorPtr = new TTensor<d, r>[NCelda]{};
-  std::vector<TCCPtr> CCPtrVec   = CCNeumann() | std::views::take(TMalla<d>::NCC())
-                                               | std::ranges::to<std::vector>();
+  std::size_t const   NCelda    = TMalla<d>::NCelda();
+  TTensorPtr          TensorPtr = std::make_unique_for_overwrite<TTensor<d, r>[]>(NCelda);
+  std::vector<TCCPtr> CCPtrVec  = CCNeumann() | std::views::take(TMalla<d>::NCC())
+                                              | std::ranges::to<std::vector>();
 
 // --------------------------------------------------------------------------------------- Funciones
 
@@ -64,16 +65,14 @@ private:
   LapT(TCelda<d> const &, TCara<d> const &, TTensor<d, r + 1u> const &) const;
 
 public:
-  TCampo() = default;
-
-  ~TCampo()
-    { delete[] TensorPtr; }
+  TCampo() :
+    TensorPtr(std::make_unique<TTensor<d, r>[]>(NCelda)) {}
 
   TCampo(TCampo const &Campo)
     { Asigna(Campo); }
 
   TCampo(TCampo &&Campo) :
-    TensorPtr(std::exchange(Campo.TensorPtr, nullptr)) {}
+    TensorPtr(std::move(Campo.TensorPtr)) {}
 
   TCampo(TTensor<d, r> const &Tensor)
     { Asigna(Tensor); }
@@ -83,11 +82,11 @@ public:
 
   void
   Asigna(TCampo const &Campo)
-    { std::copy_n(Campo.TensorPtr, NCelda, TensorPtr); }
+    { std::copy_n(begin(Campo), NCelda, begin(*this)); }
 
   void
   Asigna(TTensor<d, r> const &Tensor)
-    { std::fill_n(TensorPtr, NCelda, Tensor); }
+    { std::fill_n(begin(*this), NCelda, Tensor); }
 
   void
   Asigna(CDimRanExpr<d, r> auto const &);
@@ -152,7 +151,7 @@ public:
 
   TCampo
   &operator =(TCampo &&Campo)
-    { delete[] TensorPtr; TensorPtr = std::exchange(Campo.TensorPtr, nullptr); return *this; }
+    { TensorPtr = std::move(Campo.TensorPtr); return *this; }
 
   TCampo
   &operator =(TTensor<d, r> const &Tensor)
@@ -184,19 +183,19 @@ public:
 
   TTensor<d, r> const
   friend *begin(TCampo const &Campo)
-    { return Campo.TensorPtr; }
+    { return Campo.TensorPtr.get(); }
 
   TTensor<d, r>
   friend *begin(TCampo &Campo)
-    { return Campo.TensorPtr; }
+    { return Campo.TensorPtr.get(); }
 
   TTensor<d, r> const
   friend *end(TCampo const &Campo)
-    { return Campo.TensorPtr + Campo.NCelda; }
+    { return begin(Campo) + Campo.NCelda; }
 
   TTensor<d, r>
   friend *end(TCampo &Campo)
-    { return Campo.TensorPtr + Campo.NCelda; }
+    { return begin(Campo) + Campo.NCelda; }
 };
 
 // ===================================================================== GUÍA DE DEDUCCIÓN EXPLÍCITA
