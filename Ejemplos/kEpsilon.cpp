@@ -78,7 +78,7 @@ while (true)
 
   U -= grad(p) / UEc.aP;
 
-  if (sum(mag(p - pOld)) < 0.1)
+  if (sum(mag(p - pOld)) < 0.001 * sum(mag(p)))
     break;
 
   p = lerp(p, pOld, α);

@@ -35,7 +35,7 @@ inline constexpr std::size_t MaxID = std::numeric_limits<std::size_t>::max();
 
 export
 template<std::size_t d>
-class TPunto final : public TVector<d>
+class TPunto : public TVector<d>
 {
 public:
   std::size_t const ID;                          // Identificador

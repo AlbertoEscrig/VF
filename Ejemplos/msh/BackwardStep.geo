@@ -29,13 +29,13 @@ LL2 = newcl; Curve Loop(LL2) = {L1, L5, L6, L7};
 
 S2 = news; Plane Surface(S2) = {LL2};
 
-Transfinite Curve{L1, L3, L6} = 50;
+Transfinite Curve{L1, L3, L6} = 75;
 Transfinite Curve{L2, L4, L5, L7} = 15;
 
 Transfinite Surface{S1, S2};
 Recombine Surface{S1, S2};
 
-out[] = Extrude {-206 * mm, 0, 0} { Curve{L4, L7}; Layers{100}; Recombine; };
+out[] = Extrude {-206 * mm, 0, 0} { Curve{L4, L7}; Layers{150}; Recombine; };
 
 L8  = out[0];
 L9  = out[2];
