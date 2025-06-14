@@ -106,7 +106,7 @@ concept CExpr = std::derived_from<T, TExprBase<T>>;
 // =================================================================================================
 // ========================================================================================= DimExpr
 
-template<typename T>
+template<typename>
 inline constexpr std::size_t DimExpr = std::numeric_limits<std::size_t>::max();
 
 template<std::size_t d, std::size_t r, typename... TRest,
@@ -117,7 +117,7 @@ inline constexpr std::size_t DimExpr<T<d, r, TRest...>> = d;
 // =================================================================================================
 // ======================================================================================= RangoExpr
 
-template<typename T>
+template<typename>
 inline constexpr std::size_t RangoExpr = std::numeric_limits<std::size_t>::max();
 
 template<std::size_t d, std::size_t r, typename... TRest,
@@ -140,7 +140,7 @@ concept CDimRanExpr = CDimExpr<T, d> && RangoExpr<T> == r;
 // =================================================================================================
 // ========================================================================================= EsCampo
 
-template<typename T>
+template<typename>
 inline constexpr bool EsCampo = false;
 
 template<std::size_t d, std::size_t r>
@@ -149,7 +149,7 @@ inline constexpr bool EsCampo<TCampo<d, r>> = true;
 // =================================================================================================
 // ======================================================================================== EsTransi
 
-template<typename T>
+template<typename>
 inline constexpr bool EsTransi = false;
 
 template<std::size_t d, std::size_t r>
