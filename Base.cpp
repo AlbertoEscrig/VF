@@ -161,7 +161,7 @@ inline constexpr bool EsTransi<TExprUnaria<d, r, T, TOp>> = EsTransi<T>;
 template<std::size_t d, std::size_t r, typename T, typename U, typename TOp>
 inline constexpr bool EsTransi<TExprBinaria<d, r, T, U, TOp>> = EsTransi<T> || EsTransi<U>;
 
-// ============================================================================== FUNCIONES GLOBALES
+// ======================================================================================= FUNCIONES
 // ============================================================================================= pow
 
 export

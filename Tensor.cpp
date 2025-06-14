@@ -255,7 +255,7 @@ using TVector2D = TVector<2u>;
 
 using TVector3D = TVector<3u>;
 
-// ================================================================= OPERADORES Y FUNCIONES GLOBALES
+// ========================================================================== OPERADORES Y FUNCIONES
 // =================================================================================== TTensor<d, r>
 
 template<std::size_t r, std::size_t d>
