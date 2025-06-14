@@ -15,7 +15,7 @@ c4 = newc; Curve(c4) = {p4, p1};
 c = newcl; Curve Loop(c) = {c1, c2, c3, c4};
 s = news; Plane Surface(s) = {c};
 
-Transfinite Curve{c1, c3} = 500; 
+Transfinite Curve{c1, c3} = 250; 
 Transfinite Curve{c2, c4} = 50 Using Bump 0.3;
 Transfinite Surface{:};
 Recombine Surface{:};

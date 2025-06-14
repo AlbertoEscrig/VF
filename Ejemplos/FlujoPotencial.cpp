@@ -16,7 +16,7 @@ using namespace std;
 
 constexpr TVector2D U0 = {1.0, 0.0};
 
-constexpr size_t NCorNoOrto = 5u;
+constexpr size_t NCorNoOrto = 3u;
 
 int main()
 {

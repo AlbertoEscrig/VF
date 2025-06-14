@@ -14,9 +14,9 @@ using namespace std;
 
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr double dt      = 2.5e-5,
+constexpr double dt      = 5e-5,
                  dtWrite = 1e-2,
-                 tFin    = 0.6;
+                 tFin    = 0.8;
 
 constexpr TVector2D U0 = {1.0, 0.0};
 
@@ -69,7 +69,7 @@ for (double t = dt; t < tFin + dt; t += dt)
 
     U -= grad(p) / UEc.aP;
 
-    if (sum(mag(p - pOld)) < 1e-3)
+    if (sum(mag(p - pOld)) < 0.001 * sum(mag(p)))
       break;
     }
 

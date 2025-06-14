@@ -30,6 +30,8 @@ class TExprBase<T<d, r1, TRest...>>
 private:
   using TSelf = T<d, r1, TRest...>;
 
+// --------------------------------------------------------------------------------------- Funciones
+
 public:
   auto
   Eval(TCelda<d> const &) const = delete;
