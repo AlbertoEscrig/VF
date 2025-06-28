@@ -9,9 +9,6 @@
 import VF;
 import std;
 
-using namespace VF;
-using namespace std;
-
 // -------------------------------------------------------------------------------------- Constantes
 
 constexpr double dt      = 0.005,
@@ -24,16 +21,16 @@ int main()
 {
 // ------------------------------------------------------------------------------------------- Malla
 
-TMalla3D::Read("Flange.msh");
+VF::TMalla3D::Read("Flange.msh");
 
 // ------------------------------------------------------------------------------------------ Campos
 
-TCampoEscalar3D T;
+VF::TCampoEscalar3D T;
 
 // ------------------------------------------------------------------------- Condiciones de contorno
 
-T.DefCC<TDirichlet>("hot",  573.0);
-T.DefCC<TDirichlet>("cold", 273.0);
+T.DefCC<VF::TDirichlet>("hot",  573.0);
+T.DefCC<VF::TDirichlet>("cold", 273.0);
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 
@@ -49,13 +46,13 @@ for (double t = dt; t < tFin + dt; t += dt)
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (fmod(t, dtWrite) < dt)
+  if (std::fmod(t, dtWrite) < dt)
     {
     static int i = 0;
 
-    ofstream ofs(format("resu{:02d}.vtk", i++));
+    std::ofstream ofs(std::format("resu{:02d}.vtk", i++));
 
-    TMalla3D::Write(ofs);
+    VF::TMalla3D::Write(ofs);
     T.Write(ofs, "T");
     }
   }
