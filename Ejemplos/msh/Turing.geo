@@ -27,5 +27,5 @@ C[] += {out[0], out[2], out[4], out[8], out[11]};
 S1[] += {out[1], out[5], out[9]};
 
 Physical Curve("boundary") = C[];
-Physical Surface("domain") = S1[];
+Physical Surface("rest")   = S1[];
 Physical Surface("seed")   = S2;

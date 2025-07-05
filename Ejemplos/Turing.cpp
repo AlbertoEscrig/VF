@@ -33,10 +33,10 @@ VF::TCampoEscalar2D u,
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 
-u.Asigna("domain", 1.0);
+u.Asigna("rest", 1.0);
 u.Asigna("seed", 0.5);
 
-v.Asigna("domain", 0.0);
+v.Asigna("rest", 0.0);
 v.Asigna("seed", 0.25);
 
 for (double t = dt; t < tFin + dt; t += dt)
