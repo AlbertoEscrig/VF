@@ -34,4 +34,4 @@ Background Field = 2;
 Physical Curve("positive") = {1};
 Physical Curve("negative") = {2};
 Physical Curve("farField") = {3};
-Physical Surface("domain") = Surface{:};
+Physical Surface("domain") = {1};
