@@ -254,8 +254,9 @@ private:
     &CeldaPtrVec(std::size_t const ID) const
       { return CeldaPtrVecVec[ID]; }
 
+    template<std::convertible_to<std::size_t>... TRest>
     bool
-    EsCeldaN(TCelda<d> const *CeldaPtr, std::unsigned_integral auto const... ID) const
+    EsCeldaN(TCelda<d> const *CeldaPtr, std::size_t const, TRest const... ID) const
       { return (... && std::ranges::contains(CeldaPtrVec(ID), CeldaPtr)); }
   };
 
@@ -310,14 +311,17 @@ private:
   void
   static ReadPhysGrp(std::vector<std::string> &, std::map<int, std::size_t> &);
 
+  template<std::size_t... i>
   void
-  static ReadElements(THelper &);
+  static ReadElements(std::index_sequence<i...>, THelper &);
 
+  template<std::size_t... i>
   void
-  static ReadBoundary(THelper const &);
+  static ReadBoundary(std::index_sequence<i...>, THelper const &);
 
+  template<std::size_t... i>
   void
-  static ReadPeriodics(THelper const &);
+  static ReadPeriodics(std::index_sequence<i...>, THelper const &);
 
   template<std::size_t... i>
   TPunto<d>
@@ -663,8 +667,9 @@ for (auto const PhysTag : DimTagVec | std::views::values)
 // =================================================================================================
 
 template<std::size_t d>
+template<std::size_t... i>
 void
-TMalla<d>::ReadElements(THelper &Helper)
+TMalla<d>::ReadElements(std::index_sequence<i...>, THelper &Helper)
 {
 std::map<int, std::size_t> GrpTagIDMap;
 std::vector<int> ElemTypeVec;
@@ -715,23 +720,19 @@ for (auto const EntityTag : DimTagVec | std::views::values)
 for (auto &Celda : CeldaVec)
   for (auto &Cara : Celda)
     for (auto const CeldaNPtr : Helper.CeldaPtrVec(Cara.Punto(0u).ID))
-      {
-      auto const EsCeldaN = [&]<std::size_t... i>(std::index_sequence<i...>)
-        { return Helper.EsCeldaN(CeldaNPtr, Cara.Punto(i + 1u).ID...); };
-
-      if (CeldaNPtr != &Celda && EsCeldaN(std::make_index_sequence<d - 1u>{}))
+      if (CeldaNPtr != &Celda && Helper.EsCeldaN(CeldaNPtr, Cara.Punto(i).ID...))
         {
         Cara.CeldaNPtr = CeldaNPtr;
         break;
         }
-      }
 }
 
 // =================================================================================================
 
 template<std::size_t d>
+template<std::size_t... i>
 void
-TMalla<d>::ReadBoundary(THelper const &Helper)
+TMalla<d>::ReadBoundary(std::index_sequence<i...>, THelper const &Helper)
 {
 std::vector<std::pair<int, int>> DimTagVec;
 std::map<int, std::size_t> CCTagIDMap;
@@ -764,16 +765,11 @@ for (auto const EntityTag : DimTagVec | std::views::values)
 
       for (auto const CeldaPtr : Helper.CeldaPtrVec(PtoPtrVec.front()->ID))
         for (auto &Cara : *CeldaPtr)
-          {
-          auto const EsCC = [&]<std::size_t... i>(std::index_sequence<i...>)
-            { return (... && std::ranges::contains(PtoPtrVec, &Cara.Punto(i))); };
-
-          if (EsCC(std::make_index_sequence<d>{}))
+          if ((... && std::ranges::contains(PtoPtrVec, &Cara.Punto(i))))
             {
             Cara.CCID = CCID;
             break;
             }
-          }
       }
     }
   }
@@ -782,8 +778,9 @@ for (auto const EntityTag : DimTagVec | std::views::values)
 // =================================================================================================
 
 template<std::size_t d>
+template<std::size_t... i>
 void
-TMalla<d>::ReadPeriodics(THelper const &Helper)
+TMalla<d>::ReadPeriodics(std::index_sequence<i...>, THelper const &Helper)
 {
 std::vector<std::pair<int, int>> DimTagVec;
 
@@ -818,28 +815,17 @@ for (auto const EntityTag : DimTagVec | std::views::values)
         if (IDVec.size() < CaraMst.NPunto())
           continue;
         for (auto const CeldaSlvPtr : Helper.CeldaPtrVec(IDVec[0u]))
-          {
-          auto const EsCeldaSlv = [&]<std::size_t... i>(std::index_sequence<i...>)
-            { return Helper.EsCeldaN(CeldaSlvPtr, IDVec[i + 1u]...); };
-
-          if (EsCeldaSlv(std::make_index_sequence<d - 1u>{}))
+          if (Helper.EsCeldaN(CeldaSlvPtr, IDVec[i]...))
             {
             for (auto &CaraSlv : *CeldaSlvPtr)
-              {
-              auto const &PtoPtrVec = CaraSlv.PtoPtrVec;
-              auto const EsCaraSlv = [&]<std::size_t... i>(std::index_sequence<i...>)
-                { return (... && std::ranges::contains(PtoPtrVec, IDVec[i], &TPunto<d>::ID)); };
-
-              if (EsCaraSlv(std::make_index_sequence<d>{}))
+              if ((... && std::ranges::contains(CaraSlv.PtoPtrVec, IDVec[i], &TPunto<d>::ID)))
                 {
                 CaraSlv.CeldaNPtr = CeldaMstPtr;
                 break;
                 }
-              }
             CaraMst.CeldaNPtr = CeldaSlvPtr;
             break;
             }
-          }
         }
   }
 }
@@ -868,9 +854,9 @@ gmsh::option::setNumber("General.Terminal", 0);
 gmsh::option::setNumber("Mesh.IgnorePeriodicity", 0);
 gmsh::open(FileName);
 ReadNodes(Helper);
-ReadElements(Helper);
-ReadBoundary(Helper);
-ReadPeriodics(Helper);
+ReadElements(std::make_index_sequence<d>{}, Helper);
+ReadBoundary(std::make_index_sequence<d>{}, Helper);
+ReadPeriodics(std::make_index_sequence<d>{}, Helper);
 gmsh::finalize();
 
 IDVecVec.resize(NCelda());
