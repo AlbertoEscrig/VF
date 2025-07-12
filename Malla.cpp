@@ -788,11 +788,11 @@ gmsh::model::getEntities(DimTagVec, d - 1);
 for (auto const EntityTag : DimTagVec | std::views::values)
   {
   int MasterTag;
-  std::vector<std::size_t> NodeMstTagVec,
-                           NodeSlvTagVec;
+  std::vector<std::size_t> NodeSlvTagVec,
+                           NodeMstTagVec;
   std::vector<double> _;
 
-  gmsh::model::mesh::getPeriodicNodes(d - 1, EntityTag, MasterTag, NodeMstTagVec, NodeSlvTagVec, _);
+  gmsh::model::mesh::getPeriodicNodes(d - 1, EntityTag, MasterTag, NodeSlvTagVec, NodeMstTagVec, _);
   if (EntityTag == MasterTag)
     continue;
 
