@@ -365,6 +365,10 @@ public:
   static &Celda(std::size_t const i)
     { return CeldaVec[i]; }
 
+  std::span<TCelda<d> const>
+  static Malla()
+    { return CeldaVec; }
+
   TIDVec const
   static &IDVec(std::size_t const i)
     { return IDVecVec[i]; }
@@ -388,14 +392,6 @@ public:
   TV<>
   static V()
     { return {}; }
-
-  auto
-  static Begin()
-    { return std::cbegin(CeldaVec); }
-
-  auto
-  static End()
-    { return std::cend(CeldaVec); }
 };
 
 // =========================================================================================== ALIAS
