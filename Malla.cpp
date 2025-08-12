@@ -238,13 +238,16 @@ private:
     ID(std::size_t const Tag) const
       { return TagIDVec[Tag - 1u]; }
 
+    std::vector<TPunto<d> const *>
+    PtoPtrVec(std::span<std::size_t const> const Tag) const
+    {
+    return Tag | std::views::transform([this](auto Tag) { return &TMalla<d>::Punto(ID(Tag)); })
+               | std::ranges::to<std::vector>();
+    }
+
     void
     DefNPunto(std::size_t const NPunto)
       { CeldaPtrVecVec.resize(NPunto); }
-
-    TPunto<d> const
-    *PuntoPtr(std::size_t const Tag) const
-      { return &TMalla<d>::Punto(ID(Tag)); }
 
     void
     DefCeldaPtr(std::size_t const Tag, TCelda<d> *CeldaPtr)
@@ -254,7 +257,7 @@ private:
     &CeldaPtrVec(std::size_t const ID) const
       { return CeldaPtrVecVec[ID]; }
 
-    template<std::convertible_to<std::size_t>... TRest>
+    template<std::same_as<std::size_t>... TRest>
     bool
     EsCeldaN(TCelda<d> const *CeldaPtr, std::size_t const, TRest const... ID) const
       { return (... && std::ranges::contains(CeldaPtrVec(ID), CeldaPtr)); }
@@ -703,10 +706,7 @@ for (auto const EntityTag : DimTagVec | std::views::values)
       }
     for (auto const &ElemNodeTag : NodeTagVec | std::views::chunk(NPunto))
       {
-      auto PtoPtrVec = ElemNodeTag
-                     | std::views::transform(std::bind_front(&THelper::PuntoPtr, &Helper))
-                     | std::ranges::to<std::vector>();
-      TCelda<d> &Celda = DefCelda(Tipo, GrpID, std::move(PtoPtrVec));
+      TCelda<d> &Celda = DefCelda(Tipo, GrpID, Helper.PtoPtrVec(ElemNodeTag));
 
       for (auto const Tag : ElemNodeTag)
         Helper.DefCeldaPtr(Tag, &Celda);
@@ -755,9 +755,7 @@ for (auto const EntityTag : DimTagVec | std::views::values)
 
     for (auto const &ElemNodeTag : NodeTagVec | std::views::chunk(NPunto))
       {
-      auto const PtoPtrVec = ElemNodeTag
-                           | std::views::transform(std::bind_front(&THelper::PuntoPtr, &Helper))
-                           | std::ranges::to<std::vector>();
+      std::vector<TPunto<d> const *> const PtoPtrVec = Helper.PtoPtrVec(ElemNodeTag);
 
       for (auto const CeldaPtr : Helper.CeldaPtrVec(PtoPtrVec.front()->ID))
         for (auto &Cara : *CeldaPtr)

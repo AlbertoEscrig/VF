@@ -191,7 +191,7 @@ public:
                                               // ------------ Acceso a componentes (T[i, j, k, ...])
   decltype(auto)
   constexpr operator [](this auto &&Self, std::size_t const i)
-    { return std::forward<decltype(Self)>(Self).TensorArr[i]; }
+    { return std::forward_like<decltype(Self)>(Self.TensorArr[i]); }
 
   decltype(auto)
   constexpr operator [](this auto &&Self, std::size_t const i, std::integral auto const... j)
