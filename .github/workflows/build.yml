@@ -30,6 +30,7 @@ jobs:
         run: apt update && apt install -y libgmsh-dev
 
       - name: Build
+        shell: bash
         run: |
           VF=(
             "Base.cpp" "Tensor.cpp" "Malla.cpp" "Coef.cpp" "Contorno.cpp" "Expr.cpp"
