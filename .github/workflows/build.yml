@@ -1,0 +1,42 @@
+name: Build
+
+permissions:
+  contents: read
+
+on:
+  push:
+
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: gcc:trunk
+
+    env:
+      # FLAGS: "-O3 -std=c++23 -fmodules -fopenmp"
+      # WARNINGS: "-Wall -Wextra -pedantic"
+      FLAGS: "-O3 -std=c++23 -fmodules"
+      WARNINGS: "-Wall -Wextra -pedantic -Wno-unknown-pragmas"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency
+        run: apt update && apt install -y libgmsh-dev
+
+      - name: Build
+        run: |
+          VF=(
+            "Base.cpp" "Tensor.cpp" "Malla.cpp" "Coef.cpp" "Contorno.cpp" "Expr.cpp"
+            "Mate.cpp" "Campo.cpp" "Discr.cpp" "Sistema.cpp" "VF.cpp"
+          )
+          g++ ${{env.FLAGS}} -fsearch-include-path -fmodule-only -c bits/std.cc
+          g++ ${{env.FLAGS}} ${{env.WARNINGS}} -fmodule-only -c "${VF[@]}"
+          for i in Ejemplos/*.cpp; do
+            g++ ${{env.FLAGS}} ${{env.WARNINGS}} "$i" -lgmsh -o /dev/null
+          done
