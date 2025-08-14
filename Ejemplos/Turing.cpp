@@ -60,4 +60,6 @@ for (double t = dt; t < tFin + dt; t += dt)
     v.Write(ofs, "v");
     }
   }
+
+return 0;
 }
