@@ -30,7 +30,7 @@ jobs:
         run: apt update && apt install -y libgmsh-dev
 
       - name: G++ version
-        run: g++ --version
+        run: g++ -v
 
       - name: Build
         shell: bash
