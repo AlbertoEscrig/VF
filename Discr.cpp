@@ -571,7 +571,7 @@ lap(TCampo<d, r> const &φ)
 // ============================================================================================= rot
 
 export
-template<CDimRanExpr<3u, 0u> T>
+template<CDimRanExpr<3u, 1u> T>
 TRot<3u, 1u, T>
 rot(T const &Expr)
   { return {Expr}; }
