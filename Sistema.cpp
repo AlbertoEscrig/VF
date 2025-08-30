@@ -140,7 +140,7 @@ TSistema<d, r>::ΣaN(std::size_t const i, TCampo<d, r> const &φ) const
 {
 TTensor<d, r> aNφ = {};
 
-for (auto &&[aN, ID] : std::views::zip(aNVec[i], TMalla<d>::IDVec(i)))
+for (auto const &[aN, ID] : std::views::zip(aNVec[i], TMalla<d>::IDVec(i)))
   if (ID != MaxID) [[likely]]
     aNφ += aN * φ[ID];
 return aNφ;
