@@ -58,7 +58,7 @@ export
 template<CExpr T, CExpr U>
   requires (DimExpr<T> == DimExpr<U> && RangoExpr<T> == 0u && RangoExpr<U> == 0u)
 TExprBinaria<DimExpr<T>, 0u, T, U, TMin>
-min(T const &lhs, T const &rhs)
+min(T const &lhs, U const &rhs)
   { return {lhs, rhs}; }
 
 // =================================================================================================

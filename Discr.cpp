@@ -571,8 +571,8 @@ lap(TCampo<d, r> const &φ)
 // ============================================================================================= rot
 
 export
-template<CExpr T> requires (RangoExpr<T> == 1u)
-TRot<DimExpr<T>, 1u, T>
+template<CDimRanExpr<3u, 0u> T>
+TRot<3u, 1u, T>
 rot(T const &Expr)
   { return {Expr}; }
 

@@ -14,7 +14,6 @@ export module VF:Contorno;
 import :Base;
 import :Tensor;
 import :Malla;
-import :Coef;
 
 import std;
 
