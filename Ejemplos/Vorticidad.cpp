@@ -54,6 +54,8 @@ auto const ω2 = exp(-(pow<2u>(C & i) + pow<2u>((C & k) + d0)) / (r0 * r0)) * j;
 
 ω = Γ / (std::numbers::pi * r0 * r0) * (ω1 + ω2);
 
+solve(lap(U) == -rot(ω), U);
+
 // ---------------------------------------------------------------------------------------- Solución
 
 for (double t = dt; t < tFin + dt; t += dt)
