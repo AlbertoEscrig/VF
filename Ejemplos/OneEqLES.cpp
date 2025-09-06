@@ -22,7 +22,7 @@ constexpr TVector2D U0 = {10.0, 0.0};
 
 constexpr double k0 = 2e-5;
 
-constexpr double ν = 1.8e-5;
+constexpr double ν = 1.5e-5;
 
 constexpr double Ck = 0.094,
                  Cε = 1.048;

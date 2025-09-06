@@ -11,7 +11,7 @@ import std;
 
 // ------------------------------------------------------ Condición de contorno para p - ρ * (g & C)
 
-template <std::size_t d, std::size_t r> requires (r == 0u)
+template<std::size_t d, std::size_t r> requires (r == 0u)
 class TGradPresionDin : public VF::TCCBase<d, r>
 {
 private:

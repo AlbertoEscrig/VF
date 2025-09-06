@@ -11,8 +11,6 @@
 import VF;
 import std;
 
-namespace VF
-{
 // ============================================================================== VARIABLES EN LÍNEA
 // =================================================================================================
 
@@ -28,7 +26,7 @@ inline constexpr double E  = 9.8;
 // ====================================================================================== TkWallFunc
 
 template<std::size_t d, std::size_t r> requires (r == 0u)
-class TkWallFunc : public TNeumann<d, 0u>
+class TkWallFunc : public VF::TNeumann<d, 0u>
 {
 public:
   TkWallFunc() = default;
@@ -41,16 +39,16 @@ template<std::size_t d>
 class TWallFuncBase
 {
 private:
-  TCampo<d, 0u> const &k;
+  VF::TCampo<d, 0u> const &k;
 
 // --------------------------------------------------------------------------------------- Funciones
 
 protected:
-  TWallFuncBase(TCampo<d, 0u> const &k_) :
+  TWallFuncBase(VF::TCampo<d, 0u> const &k_) :
     k(k_) {}
 
   double
-  Uτ(TCara<d> const &Cara) const
+  Uτ(VF::TCara<d> const &Cara) const
     { return std::sqrt(std::sqrt(Cμ) * k.Eval(Cara.CeldaP())); }
 };
 
@@ -58,7 +56,7 @@ protected:
 // ====================================================================================== TεWallFunc
 
 template<std::size_t d, std::size_t r> requires (r == 0u)
-class TεWallFunc : public TWallFuncBase<d>, public TCCBase<d, 0u>
+class TεWallFunc : public TWallFuncBase<d>, public VF::TCCBase<d, 0u>
 {
 private:
   using TWallFuncBase<d>::Uτ;
@@ -66,23 +64,23 @@ private:
 public:
   TεWallFunc() = delete;
 
-  TεWallFunc(TCampo<d, 0u> const &k_) :
+  TεWallFunc(VF::TCampo<d, 0u> const &k_) :
     TWallFuncBase<d>(k_) {}
 
-  std::tuple<double, TTensor<d, 0u>>
-  virtual Coef(TCara<d> const &) const override
+  std::tuple<double, VF::TTensor<d, 0u>>
+  virtual Coef(VF::TCara<d> const &) const override
     { return {}; }
 
-  std::tuple<double, TTensor<d, 0u>>
-  virtual GradCoef(TCara<d> const &Cara) const override
-    { TVector const L = Cara.L(); return {0.0, pow<3u>(Uτ(Cara)) / (κ * (L & L))}; }
+  std::tuple<double, VF::TTensor<d, 0u>>
+  virtual GradCoef(VF::TCara<d> const &Cara) const override
+    { VF::TVector const L = Cara.L(); return {0.0, VF::pow<3u>(Uτ(Cara)) / (κ * (L & L))}; }
 };
 
 // =================================================================================================
 // ==================================================================================== TμEfWallFunc
 
 template<std::size_t d, std::size_t r> requires (r == 0u)
-class TμEfWallFunc : public TWallFuncBase<d>, public TCCBase<d, 0u>
+class TμEfWallFunc : public TWallFuncBase<d>, public VF::TCCBase<d, 0u>
 {
 private:
   double const μ;
@@ -95,23 +93,21 @@ private:
 public:
   TμEfWallFunc() = delete;
 
-  TμEfWallFunc(TCampo<d, 0u> const &k_, double const μ_) :
+  TμEfWallFunc(VF::TCampo<d, 0u> const &k_, double const μ_) :
     TWallFuncBase<d>(k_), μ(μ_) {}
 
-  std::tuple<double, TTensor<d, 0u>>
-  virtual Coef(TCara<d> const &) const override;
+  std::tuple<double, VF::TTensor<d, 0u>>
+  virtual Coef(VF::TCara<d> const &) const override;
 };
 
 // ======================================================================== IMPLEMENTACIÓN DE CLASES
 // ==================================================================================== TμEfWallFunc
 
 template<std::size_t d, std::size_t r> requires (r == 0u)
-std::tuple<double, TTensor<d, 0u>>
-TμEfWallFunc<d, r>::Coef(TCara<d> const &Cara) const
+std::tuple<double, VF::TTensor<d, 0u>>
+TμEfWallFunc<d, r>::Coef(VF::TCara<d> const &Cara) const
 {
 double const yPlus = Uτ(Cara) * mag(Cara.L()) / μ;
 
 return {0.0, μ * κ * yPlus / std::log(E * yPlus)};
 }
-
-} // VF

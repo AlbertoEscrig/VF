@@ -18,7 +18,7 @@ constexpr TVector2D U0 = {10.0, 0.0};
 constexpr double k0 = 0.375,
                  ε0 = 14.855;
 
-constexpr double ν = 1.8e-5;
+constexpr double ν = 1.5e-5;
 
 constexpr double α = 0.7;
 
@@ -89,9 +89,9 @@ while (true)
 
   auto const G = νt * ((grad(U) + gradT(U)) && grad(U)); // No se materializa la expresión
 
-  solve(div(U * k) - div(νt * grad(k)) / σk +      ω * Sp(k) ==          G, k, α);
+  solve(div(U * k) - div((ν + νt / σk) * grad(k)) +      ω * Sp(k) ==          G, k, α);
 
-  solve(div(U * ε) - div(νt * grad(ε)) / σε + C2 * ω * Sp(ε) == C1 * ω * G, ε, α);
+  solve(div(U * ε) - div((ν + νt / σε) * grad(ε)) + C2 * ω * Sp(ε) == C1 * ω * G, ε, α);
   }
 
 // -------------------------------------------------------------------------------------- Resultados

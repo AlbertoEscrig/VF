@@ -20,7 +20,7 @@ constexpr double dt      = 1e-5,
 
 constexpr TVector2D U0 = {10.0, 0.0};
 
-constexpr double ν = 1.8e-5;
+constexpr double ν = 1.5e-5;
 
 constexpr double Cs = 0.15;
 
