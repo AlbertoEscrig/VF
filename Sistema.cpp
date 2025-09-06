@@ -54,9 +54,7 @@ private:
 // ------------------------------------------------------------------------------------------- Datos
 
 private:
-  static constexpr double ε0 = std::numeric_limits<double>::epsilon();
-
-  static constexpr double ε = 10.0 * ε0;        // Error relativo a ||b||
+  static constexpr double ε = 1e-8;             // Error relativo a ||b||
   static constexpr std::size_t MaxIt = 10'000u; // Número máximo de iteraciones
 
   std::vector<typename TCoef<d, r>::TaN> aNVec; // Términos no diagonales
@@ -171,7 +169,7 @@ for (std::size_t It = 0u; It < MaxIt; ++It)
   if (Dot(e, e) < tol2)
     break;
   ρ = Dot(e0, e);
-  if (std::abs(ρ) < pow<2u>(ε0) * e0e0)
+  if (std::abs(ρ) < pow<2u>(std::numeric_limits<double>::epsilon()) * e0e0)
     {
     e0 = e = b + aP * (1.0 - f) / f * φ - aP / f * x - ΣaN(x);
     ρ = e0e0 = Dot(e0, e0);
