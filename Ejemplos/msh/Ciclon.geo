@@ -4,14 +4,14 @@ SetFactory("Built-in");
 
 cm = 1e-2;
 
-Theta = Pi / 6;
+Theta = Pi / 3;
 
 lc = 1 * cm;
 
-Point(1) = { 5 * cm, 0, -40 * cm};
-Point(2) = {10 * cm, 0, -40 * cm};
-Point(3) = {15 * cm, 0,   0 * cm};
-Point(4) = { 5 * cm, 0,   0 * cm};
+Point(1) = {0,  5 * cm, -40 * cm};
+Point(2) = {0, 10 * cm, -40 * cm};
+Point(3) = {0, 15 * cm,   0 * cm};
+Point(4) = {0,  5 * cm,   0 * cm};
 
 Curve(1) = {1, 2};
 Curve(2) = {2, 3};
@@ -28,7 +28,7 @@ Plane Surface(6) = {5};
 Transfinite Surface{6};
 Recombine Surface{6};
 
-Extrude {-5 * cm, 0, 0}
+Extrude {0, -5 * cm, 0}
   {
   Curve{4};
   Layers{5 * cm / lc};
@@ -56,32 +56,23 @@ Extrude {{0, 0, 1}, {0, 0, 0}, Theta}
   Recombine;
   }
 
-Extrude {{0, 0, 1}, {0, 0, 0}, Pi / 2 - Theta}
+Extrude {{0, 0, 1}, {0, 0, 0}, Pi - Theta / 2}
   {
   Surface{44, 61, 83, 100, 117};
-  Layers{(Pi / 2 - Theta) * 15 * cm / lc};
+  Layers{(Pi - Theta / 2) * 15 * cm / lc};
   Recombine;
   }
 
-Extrude {{0, 0, 1}, {0, 0, 0}, Pi / 2}
+Extrude {{0, 0, 1}, {0, 0, 0}, Pi - Theta / 2}
   {
   Surface{139, 156, 178, 195, 212};
-  Layers{(Pi / 2) * 15 * cm / lc};
+  Layers{(Pi - Theta / 2) * 15 * cm / lc};
   Recombine;
   }
 
-Extrude {{0, 0, 1}, {0, 0, 0}, Pi}
-  {
-  Surface{234, 251, 273, 290, 307};
-  Layers{Pi * 15 * cm / lc};
-  Recombine;
-  }
+Physical Surface("inlet")  = {82};
+Physical Surface("outlet") = {112, 207, 294};
+Physical Surface("wall")   = {31, 35, 56, 74, 78, 116, 126, 130, 151, 169, 173,
+                              177, 211, 221, 225, 245, 262, 266, 270, 298};
 
-Physical Surface("inlet") = {177};
-
-Physical Surface("outlet") = {112, 207, 302, 389};
-
-Physical Surface("wall") = {31, 35, 56, 74, 78, 82, 116, 126, 130, 151, 169, 173, 211, 221, 225, 246,
-                            264, 268, 272, 306, 316, 320, 340, 357, 361, 365, 393};
-
-Physical Volume("domain") = {1:20};
+Physical Volume("domain") = Volume{:};

@@ -13,7 +13,7 @@ using namespace std;
 
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr TVector3D U0 = {-10.0, 0.0, 0.0};
+constexpr TVector3D U0 = {10.0, 0.0, 0.0};
 
 constexpr double k0 = 0.375,
                  ε0 = 6.41;
