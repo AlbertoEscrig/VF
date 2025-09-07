@@ -21,7 +21,7 @@ Curve(4) = {4, 1};
 Transfinite Curve{1, 3} = 10 * cm / lc;
 Transfinite Curve{2, 4} = 40 * cm / lc;
 
-Curve Loop(5) = {1, 2, 3, 4};
+Curve Loop(5) = {1:4};
 
 Plane Surface(6) = {5};
 

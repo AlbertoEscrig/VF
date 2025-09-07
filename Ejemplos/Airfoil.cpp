@@ -72,6 +72,12 @@ p.DefCC<VF::TDirichlet>("outlet");
 // --------------------------------------------------------------------------- Condiciones iniciales
 
 U = U0;
+
+solve(lap(p) == div(U), p);
+
+U -= grad(p);
+
+p = 0.0;
 k = k0;
 ω = ω0;
 
@@ -107,9 +113,9 @@ while (true)
 
   auto const G = νt * ((grad(U) + gradT(U)) && grad(U));
 
-  solve(div(U * k) - div((ν + σk * νt) * grad(k)) + Cμ * ω * Sp(k) ==             G, k, α);
+  solve(div(U * k) - div((ν + σk * νt) * grad(k)) + Cμ * ω * Sp(k) ==          G, k, α);
 
-  solve(div(U * ω) - div((ν + σω * νt) * grad(ω)) + β  * ω * Sp(ω) == γ * ω / k * G, ω, α);
+  solve(div(U * ω) - div((ν + σω * νt) * grad(ω)) + β  * ω * Sp(ω) == γ / νt * G, ω, α);
   }
 
 // -------------------------------------------------------------------------------------- Resultados
