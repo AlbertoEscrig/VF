@@ -21,12 +21,11 @@ Curve(4) = {4, 1};
 Transfinite Curve{1, 3} = 10 * cm / lc;
 Transfinite Curve{2, 4} = 40 * cm / lc;
 
-Curve Loop(5) = {1:4};
+Curve Loop(1) = {1:4};
+Plane Surface(1) = {1};
 
-Plane Surface(6) = {5};
-
-Transfinite Surface{6};
-Recombine Surface{6};
+Transfinite Surface{1};
+Recombine Surface{1};
 
 Extrude {0, -5 * cm, 0}
   {
@@ -37,42 +36,42 @@ Extrude {0, -5 * cm, 0}
 
 Extrude {0, 0, 10 * cm}
   {
-  Curve{3, 8};
+  Curve{3, 6};
   Layers{10 * cm / lc};
   Recombine;
   }
 
 Extrude {0, 0, 10 * cm}
   {
-  Curve{15};
+  Curve{13};
   Layers{10 * cm / lc};
   Recombine;
   }
 
 Extrude {{0, 0, 1}, {0, 0, 0}, Theta}
   {
-  Surface{6, 10, 14, 18, 22};
+  Surface{1, 8, 12, 16, 20};
   Layers{Theta * 15 * cm / lc};
   Recombine;
   }
 
 Extrude {{0, 0, 1}, {0, 0, 0}, Pi - Theta / 2}
   {
-  Surface{44, 61, 83, 100, 117};
+  Surface{42, 59, 81, 98, 115};
   Layers{(Pi - Theta / 2) * 15 * cm / lc};
   Recombine;
   }
 
 Extrude {{0, 0, 1}, {0, 0, 0}, Pi - Theta / 2}
   {
-  Surface{139, 156, 178, 195, 212};
+  Surface{137, 154, 176, 193, 210};
   Layers{(Pi - Theta / 2) * 15 * cm / lc};
   Recombine;
   }
 
-Physical Surface("inlet")  = {82};
-Physical Surface("outlet") = {112, 207, 294};
-Physical Surface("wall")   = {31, 35, 56, 74, 78, 116, 126, 130, 151, 169, 173,
-                              177, 211, 221, 225, 245, 262, 266, 270, 298};
+Physical Surface("inlet")  = {80};
+Physical Surface("outlet") = {110, 205, 292};
+Physical Surface("wall")   = {29, 33, 54, 72, 76, 114, 124, 128, 149, 167, 171,
+                              175, 209, 219, 223, 243, 260, 264, 268, 296};
 
 Physical Volume("domain") = Volume{:};

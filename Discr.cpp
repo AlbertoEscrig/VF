@@ -27,8 +27,6 @@
 //      rot(φ)                ∇ ^ φ               No
 //
 //      Sp(φ)                   φ                 Sí
-//
-//    Sp(ρ * φ)               ρ * φ               Sí
 
 // ===================================================================== DECLARACIÓN DE LA PARTICIÓN
 // =================================================================================================
@@ -315,33 +313,8 @@ public:
 // =================================================================================================
 // ============================================================================================= TSp
 
-template<std::size_t d, std::size_t r, typename T = void>
-class TSp : public TExprBase<TSp<d, r, T>>
-{
-private:
-  std::conditional_t<EsCampo<T>, T const &, T const> ρ;
-  TCampo<d, r> const &φ;
-
-// --------------------------------------------------------------------------------------- Funciones
-
-public:
-  TSp(TExprBinaria<d, r, T, TCampo<d, r>, std::multiplies<>> const &Expr) :
-    ρ(Expr.lhs), φ(Expr.rhs) {}
-
-  TTensor<d, r>
-  Eval(TCelda<d> const &Celda) const
-    { return ρ.Eval(Celda) * φ.Eval(Celda); }
-
-  template<bool>
-  TCoef<d, r>
-  Coef(TCelda<d> const &) const;
-};
-
-// =================================================================================================
-// ================================================================================= TSp<d, r, void>
-
 template<std::size_t d, std::size_t r>
-class TSp<d, r, void> : public TExprBase<TSp<d, r, void>>
+class TSp : public TExprBase<TSp<d, r>>
 {
 private:
   TCampo<d, r> const &φ;
@@ -484,20 +457,6 @@ for (auto const &[i, Cara] : Celda | std::views::enumerate)
 return Coef / Celda.V;
 }
 
-// =================================================================================================
-// ============================================================================================= TSp
-
-template<std::size_t d, std::size_t r, typename T>
-template<bool>
-TCoef<d, r>
-TSp<d, r, T>::Coef(TCelda<d> const &Celda) const
-{
-if (double const ρP = ρ.Eval(Celda); ρP >= 0.0)
-  return {ρP, {}, {}};
-else
-  return {0.0, {}, ρP * φ.Eval(Celda)};
-}
-
 // ======================================================================================= FUNCIONES
 // =============================================================================================== d
 
@@ -584,13 +543,5 @@ template<std::size_t d, std::size_t r>
 TSp<d, r>
 Sp(TCampo<d, r> const &φ)
   { return {φ}; }
-
-// =================================================================================================
-
-export
-template<std::size_t d, std::size_t r, CDimRanExpr<d, 0u> T>
-TSp<d, r, T>
-Sp(TExprBinaria<d, r, T, TCampo<d, r>, std::multiplies<>> const &Expr)
-  { return {Expr}; }
 
 } // VF

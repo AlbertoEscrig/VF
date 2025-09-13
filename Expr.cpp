@@ -321,8 +321,6 @@ public:
   friend class TDivImpl<d, r - 1u, T>;
 
   friend class TLap<d, r - 1u, T>;
-
-  friend class TSp<d, r, T>;
 };
 
 // ======================================================================== IMPLEMENTACIÓN DE CLASES

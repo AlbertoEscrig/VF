@@ -861,7 +861,7 @@ for (auto &&[IDVec, Celda] : std::views::zip(IDVecVec, CeldaVec))
     if (!Cara.EsCC())
       {
       if (Cara.CeldaNPtr == nullptr)
-        throw std::runtime_error("Malla incoherente");
+        throw std::runtime_error("Contorno no identificado");
       ID = Cara.CeldaN().ID;
       }
   }
