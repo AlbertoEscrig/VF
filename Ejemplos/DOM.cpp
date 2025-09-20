@@ -59,14 +59,14 @@ VF::TMalla3D::Read("Enclosure.msh");
 
 VF::TCampoEscalar3D T,
                     G,
-                    I[24];
+                    I[24u];
 
 // ------------------------------------------------------------------------- Condiciones de contorno
 
 T.DefCC<VF::TDirichlet>("hot", Thot);
 T.DefCC<VF::TDirichlet>("cold", Tcold);
 
-for (std::size_t i = 0u; i < 24; ++i)
+for (unsigned int i = 0u; i < 24u; ++i)
   {
   I[i].DefCC<VF::TDirichlet>("hot", σ * VF::pow<4u>(Thot) / π);
   I[i].DefCC<VF::TDirichlet>("cold", σ * VF::pow<4u>(Tcold) / π);
@@ -80,11 +80,11 @@ solve(lap(T) == 0, T);
 
 while (true)
   {
-  for (std::size_t i = 0u; i < 24; ++i)
+  for (unsigned int i = 0u; i < 24u; ++i)
     solve(div(s[i] * I[i]) + a * Sp(I[i]) == a * σ * pow<4u>(T) / π, I[i]);
 
   G = 0.0;
-  for (std::size_t i = 0u; i < 24; ++i)
+  for (unsigned int i = 0u; i < 24u; ++i)
     G += w * I[i];
 
   VF::TCampo const TOld = T;
