@@ -79,5 +79,3 @@ p.Write(ofs, "p");
 
 return 0;
 }
-
-

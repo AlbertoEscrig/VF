@@ -118,4 +118,3 @@ for (double t = dt; t < tFin + dt; t += dt)
 
 return 0;
 }
-

@@ -105,5 +105,3 @@ G.Write(ofs, "G");
 
 return 0;
 }
-
-

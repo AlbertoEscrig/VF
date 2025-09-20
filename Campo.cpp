@@ -48,6 +48,9 @@ private:
   static CCNeumann()                             // Por defecto Neumann homogénea
     { while (true) co_yield std::make_unique<TNeumann<d, r>>(); }
 
+  void
+  Aplica(std::invocable<std::size_t> auto const &) const;
+
   template<typename T, typename... TArgs>
   void
   DefCC(std::false_type, std::string_view const CCStr, TArgs &&...Args)
@@ -92,10 +95,11 @@ public:
     { std::fill_n(begin(*this), NCelda, Tensor); }
 
   void
-  Asigna(CDimRanExpr<d, r> auto const &);
+  Asigna(CDimRanExpr<d, r> auto const &Expr)
+    { Aplica([this, &Expr](std::size_t const i) { TensorPtr[i] = Expr[i]; }); }
 
   void
-  Asigna(std::string_view const, TTensor<d, r> const &Tensor);
+  Asigna(std::string_view const, TTensor<d, r> const &);
 
   void
   Asigna(std::string_view const, CDimRanExpr<d, r> auto const &);
@@ -175,16 +179,36 @@ public:
     { Asigna(Expr); return *this; }
 
   TCampo
-  &operator +=(TTensor<d, r> const &);
+  &operator +=(TTensor<d, r> const &Tensor)
+    { Aplica([this, &Tensor](std::size_t const i) { TensorPtr[i] += Tensor; }); return *this; }
 
   TCampo
-  &operator +=(CDimRanExpr<d, r> auto const &);
+  &operator +=(CDimRanExpr<d, r> auto const &Expr)
+    { Aplica([this, &Expr](std::size_t const i) { TensorPtr[i] += Expr[i]; }); return *this; }
 
   TCampo
-  &operator -=(TTensor<d, r> const &);
+  &operator -=(TTensor<d, r> const &Tensor)
+    { Aplica([this, &Tensor](std::size_t const i) { TensorPtr[i] -= Tensor; }); return *this; }
 
   TCampo
-  &operator -=(CDimRanExpr<d, r> auto const &);
+  &operator -=(CDimRanExpr<d, r> auto const &Expr)
+    { Aplica([this, &Expr](std::size_t const i) { TensorPtr[i] -= Expr[i]; }); return *this; }
+
+  TCampo
+  &operator *=(double const Escalar)
+    { Aplica([this, Escalar](std::size_t const i) { TensorPtr[i] *= Escalar; }); return *this; }
+
+  TCampo
+  &operator *=(CDimRanExpr<d, 0u> auto const &Expr)
+    { Aplica([this, &Expr](std::size_t const i) { TensorPtr[i] *= Expr[i]; }); return *this; }
+
+  TCampo
+  &operator /=(double const Escalar)
+    { Aplica([this, Escalar](std::size_t const i) { TensorPtr[i] /= Escalar; }); return *this; }
+
+  TCampo
+  &operator /=(CDimRanExpr<d, 0u> auto const &Expr)
+    { Aplica([this, &Expr](std::size_t const i) { TensorPtr[i] /= Expr[i]; }); return *this; }
 
   using TExprBase<TCampo<d, r>>::operator [];
 
@@ -254,11 +278,11 @@ using TCampoVectorial3D = TCampoVectorial<3u>;
 
 template<std::size_t d, std::size_t r>
 void
-TCampo<d, r>::Asigna(CDimRanExpr<d, r> auto const &Expr)
+TCampo<d, r>::Aplica(std::invocable<std::size_t> auto const &Fn) const
 {
 #pragma omp parallel for
 for (std::size_t i = 0u; i < NCelda; ++i)
-  TensorPtr[i] = Expr[i];
+  Fn(i);
 }
 
 // =================================================================================================
@@ -267,12 +291,8 @@ template<std::size_t d, std::size_t r>
 void
 TCampo<d, r>::Asigna(std::string_view const GrpStr, TTensor<d, r> const &Tensor)
 {
-std::size_t const GrpID = TMalla<d>::GrpID(GrpStr);
-
-#pragma omp parallel for
-for (std::size_t i = 0u; i < NCelda; ++i)
-  if (TMalla<d>::Celda(i).GrpID == GrpID)
-    TensorPtr[i] = Tensor;
+Aplica([this, &Tensor, GrpID = TMalla<d>::GrpID(GrpStr)](std::size_t const i)
+       { if (TMalla<d>::Celda(i).GrpID == GrpID) TensorPtr[i] = Tensor; });
 }
 
 // =================================================================================================
@@ -281,60 +301,8 @@ template<std::size_t d, std::size_t r>
 void
 TCampo<d, r>::Asigna(std::string_view const GrpStr, CDimRanExpr<d, r> auto const &Expr)
 {
-std::size_t const GrpID = TMalla<d>::GrpID(GrpStr);
-
-#pragma omp parallel for
-for (std::size_t i = 0u; i < NCelda; ++i)
-  if (TMalla<d>::Celda(i).GrpID == GrpID)
-    TensorPtr[i] = Expr[i];
-}
-
-// =================================================================================================
-
-template<std::size_t d, std::size_t r>
-TCampo<d, r>
-&TCampo<d, r>::operator +=(TTensor<d, r> const &Tensor)
-{
-#pragma omp parallel for
-for (std::size_t i = 0u; i < NCelda; ++i)
-  TensorPtr[i] += Tensor;
-return *this;
-}
-
-// =================================================================================================
-
-template<std::size_t d, std::size_t r>
-TCampo<d, r>
-&TCampo<d, r>::operator +=(CDimRanExpr<d, r> auto const &Expr)
-{
-#pragma omp parallel for
-for (std::size_t i = 0u; i < NCelda; ++i)
-  TensorPtr[i] += Expr[i];
-return *this;
-}
-
-// =================================================================================================
-
-template<std::size_t d, std::size_t r>
-TCampo<d, r>
-&TCampo<d, r>::operator -=(TTensor<d, r> const &Tensor)
-{
-#pragma omp parallel for
-for (std::size_t i = 0u; i < NCelda; ++i)
-  TensorPtr[i] -= Tensor;
-return *this;
-}
-
-// =================================================================================================
-
-template<std::size_t d, std::size_t r>
-TCampo<d, r>
-&TCampo<d, r>::operator -=(CDimRanExpr<d, r> auto const &Expr)
-{
-#pragma omp parallel for
-for (std::size_t i = 0u; i < NCelda; ++i)
-  TensorPtr[i] -= Expr[i];
-return *this;
+Aplica([this, &Expr, GrpID = TMalla<d>::GrpID(GrpStr)](std::size_t const i)
+       { if (TMalla<d>::Celda(i).GrpID == GrpID) TensorPtr[i] = Expr[i]; });
 }
 
 // =================================================================================================
