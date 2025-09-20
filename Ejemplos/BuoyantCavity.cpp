@@ -92,7 +92,7 @@ while (true)
 // ---------------------------------------------------------------------------------- Momento lineal
 
   VF::TSistema const UEc =
-    div(ρ * U * U) - μ * lap(U) == μ * div(gradT(U)) / 3.0 - grad(p) - (g & C) * grad(ρ);
+    div(ρ * U * U) - μ * lap(U) == μ * grad(div(U)) / 3.0 - grad(p) - (g & C) * grad(ρ);
 
   solve(UEc, U, α);
 

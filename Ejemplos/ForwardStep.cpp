@@ -76,7 +76,7 @@ for (double t = dt; t < tFin + dt; t += dt)
     TSistema const UEc =
       ρ * Sp(U) / dt - div(ρ * U) * Sp(U) + div(ρ * U * U) - μ * lap(U)
       ==
-      ρ * UOld / dt + μ * div(gradT(U)) / 3.0 - grad(p);
+      ρ * UOld / dt + μ * grad(div(U)) / 3.0 - grad(p);
 
     solve(UEc, U);
 

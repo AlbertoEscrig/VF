@@ -22,7 +22,11 @@
 //
 // div(Γ * grad(φ))      ∇ & (Γ * ∇ * φ)          Sí
 //
+// div(Γ & grad(φ))      ∇ & (Γ & ∇ * φ)          Sí
+//
 //  div(gradT(φ))          ∇ & (∇ * φ)ᵀ           No
+//
+//  grad(div(φ))           ∇ * (∇ & φ)            No
 //
 //      rot(φ)                ∇ ^ φ               No
 //
@@ -91,7 +95,7 @@ private:
 
   template<bool>
   std::tuple<double, double, TTensor<d, r>>
-  Coef(TCara<d> const &, double const) const;
+  Coef(TCara<d> const &) const;
 
 public:
   TDivImpl(TExprBinaria<d, r + 1u, T, TCampo<d, r>, std::multiplies<>> const &Expr) :
@@ -129,6 +133,11 @@ public:
   TTensor<d, r>
   Coef(TCelda<d> const &Celda) const
     { return Eval(Celda); }
+
+// ------------------------------------------------------------------------------------------ Amigos
+
+  template<std::size_t, std::size_t>
+  friend class TLapT;
 };
 
 // =================================================================================================
@@ -157,7 +166,8 @@ public:
 
 // ------------------------------------------------------------------------------------------ Amigos
 
-  friend class TLapBase<d, r - 1u>;
+  template<std::size_t, std::size_t, typename>
+  friend class TLap;
 };
 
 // =================================================================================================
@@ -186,74 +196,59 @@ public:
 
 // ------------------------------------------------------------------------------------------ Amigos
 
-  friend class TLapT<d, r - 1u>;
-};
-
-// =================================================================================================
-// ======================================================================================== TLapBase
-
-template<std::size_t d, std::size_t r>
-class TLapBase
-{
-protected:
-  TCampo<d, r> const &φ;
-
-// --------------------------------------------------------------------------------------- Funciones
-
-protected:
-  TLapBase(TCampo<d, r> const &φ_) :
-    φ(φ_) {}
-
-  TLapBase(TGrad<d, r + 1u, TCampo<d, r>> const &Expr) :
-    φ(Expr.φ) {}
-
-  std::tuple<double, double, TTensor<d, r>>
-  Coef(TCara<d> const &, TTensor<d, r + 1u> const &) const;
+  template<std::size_t, std::size_t>
+  friend class TLapT;
 };
 
 // =================================================================================================
 // ============================================================================================ TLap
 
-template<std::size_t d, std::size_t r, typename T = void>
-class TLap : public TLapBase<d, r>, public TExprBase<TLap<d, r, T>>
+template<std::size_t d, std::size_t r, typename T = std::monostate>
+class TLap : public TExprBase<TLap<d, r, T>>
 {
 private:
-  using TLapBase<d, r>::φ;
-  std::conditional_t<EsCampo<T>, T const &, T const> Γ;
+  TCampo<d, r> const &φ;
+  [[no_unique_address]] std::conditional_t<EsCampo<T>, T const &, T const> Γ = {};
 
 // --------------------------------------------------------------------------------------- Funciones
 
+private:
+  std::tuple<double, double, TTensor<d, r>>
+  Coef(TCara<d> const &, TTensor<d, r + 1u> const &) const;
+
+  TVector<d>
+  SfΓf(TCara<d> const &Cara) const requires std::same_as<T, std::monostate>
+    { return Cara.Sf; }
+
+  TVector<d>
+  SfΓf(TCara<d> const &Cara) const requires CDimRanExpr<T, d, 0u>
+    { return Cara.Sf * Γ.Eval(Cara); }
+
+  TVector<d>
+  SfΓf(TCara<d> const &Cara) const requires std::same_as<T, TTensor<d, 2u>>
+    { return Cara.Sf & Γ.Eval(Cara); }
+
+  TVector<d>
+  SfΓf(TCara<d> const &Cara) const requires CDimRanExpr<T, d, 2u>
+    { return Cara.Sf & Γ.Eval(Cara); }
+
 public:
+  TLap(TCampo<d, r> const &φ_) :
+    φ(φ_) {}
+
   TLap(TExprBinaria<d, r + 1u, T, TGrad<d, r + 1u, TCampo<d, r>>, std::multiplies<>> const &Expr) :
-    TLapBase<d, r>(Expr.rhs), Γ(Expr.lhs) {}
+    φ(Expr.rhs.φ), Γ(Expr.lhs) {}
+
+  TLap(TExprBinaria<d, r + 1u, T, TGrad<d, r + 1u, TCampo<d, r>>, std::bit_and<>> const &Expr) :
+    φ(Expr.rhs.φ), Γ(Expr.lhs) {}
+
+  TTensor<d, r>
+  Eval(TCelda<d> const &Celda) const requires std::same_as<T, std::monostate>
+    { return φ.Lap(Celda); }
 
   TTensor<d, r>
   Eval(TCelda<d> const &Celda) const
     { return φ.Lap(Γ, Celda); }
-
-  template<bool>
-  TCoef<d, r>
-  Coef(TCelda<d> const &) const;
-};
-
-// =================================================================================================
-// ================================================================================ TLap<d, r, void>
-
-template<std::size_t d, std::size_t r>
-class TLap<d, r, void> : public TLapBase<d, r>, public TExprBase<TLap<d, r, void>>
-{
-private:
-  using TLapBase<d, r>::φ;
-
-// --------------------------------------------------------------------------------------- Funciones
-
-public:
-  TLap(TCampo<d, r> const &φ_) :
-    TLapBase<d, r>(φ_) {}
-
-  TTensor<d, r>
-  Eval(TCelda<d> const &Celda) const
-    { return φ.Lap(Celda); }
 
   template<bool>
   TCoef<d, r>
@@ -273,6 +268,9 @@ private:
 
 public:
   TLapT(TGradT<d, r + 1u, TCampo<d, r>> const &Expr) :
+    φ(Expr.φ) {}
+
+  TLapT(TDivExpl<d, r - 1u, TCampo<d, r>> const &Expr) :
     φ(Expr.φ) {}
 
   TTensor<d, r>
@@ -341,8 +339,10 @@ public:
 template<std::size_t d, std::size_t r, typename T>
 template<bool EsTransi>
 std::tuple<double, double, TTensor<d, r>>
-TDivImpl<d, r, T>::Coef(TCara<d> const &Cara, double const SfUf) const
+TDivImpl<d, r, T>::Coef(TCara<d> const &Cara) const
 {
+double const SfUf = TDivImpl::SfUf(Cara);
+
 if constexpr (EsTransi)                          // Linear upwind
   {
   if (SfUf >= 0.0)
@@ -380,7 +380,7 @@ TCoef<d, r> Coef = {};
 
 for (auto const &[i, Cara] : Celda | std::views::enumerate)
   {
-  auto const [aP, aN, b] = TDivImpl::Coef<EsTransi>(Cara, SfUf(Cara));
+  auto const [aP, aN, b] = TDivImpl::Coef<EsTransi>(Cara);
 
   Coef.aP += aP;
   Coef.aN[i] = aN;
@@ -390,13 +390,13 @@ return Coef / Celda.V;
 }
 
 // =================================================================================================
-// ======================================================================================== TLapBase
+// ============================================================================================ TLap
 
-template<std::size_t d, std::size_t r>
+template<std::size_t d, std::size_t r, typename T>
 std::tuple<double, double, TTensor<d, r>>
-TLapBase<d, r>::Coef(TCara<d> const &Cara, TTensor<d, r + 1u> const &gradφ) const
+TLap<d, r, T>::Coef(TCara<d> const &Cara, TTensor<d, r + 1u> const &gradφ) const
 {
-TVector<d> const &Sf = Cara.Sf;
+TVector<d> const Sf = SfΓf(Cara);
 
 if (Cara.EsCC()) [[unlikely]]
   {
@@ -413,7 +413,6 @@ return {-aN, aN, (Sf - Sfδ) & Cara.Interpola(gradφ, φ.Grad(Cara.CeldaN()))};
 }
 
 // =================================================================================================
-// ============================================================================================ TLap
 
 template<std::size_t d, std::size_t r, typename T>
 template<bool>
@@ -425,30 +424,7 @@ TCoef<d, r> Coef = {};
 
 for (auto const &[i, Cara] : Celda | std::views::enumerate)
   {
-  auto const [aP, aN, b] = TLapBase<d, r>::Coef(Cara, gradφ);
-  double const Γf = Γ.Eval(Cara);
-
-  Coef.aP += Γf * aP;
-  Coef.aN[i] = Γf * aN;
-  Coef.b += Γf * b;
-  }
-return Coef / Celda.V;
-}
-
-// =================================================================================================
-// ================================================================================ TLap<d, r, void>
-
-template<std::size_t d, std::size_t r>
-template<bool>
-TCoef<d, r>
-TLap<d, r, void>::Coef(TCelda<d> const &Celda) const
-{
-TTensor<d, r + 1u> const gradφ = φ.Grad(Celda);
-TCoef<d, r> Coef = {};
-
-for (auto const &[i, Cara] : Celda | std::views::enumerate)
-  {
-  auto const [aP, aN, b] = TLapBase<d, r>::Coef(Cara, gradφ);
+  auto const [aP, aN, b] = TLap::Coef(Cara, gradφ);
 
   Coef.aP += aP;
   Coef.aN[i] = aN;
@@ -470,6 +446,14 @@ d(TCampo<d1, r> const &φ)
 // ============================================================================================= div
 
 export
+template<std::size_t d, std::size_t r>
+TDivImpl<d, r - 1u, TTensor<d, 1u>>
+div(TExprBinaria<d, r, TTensor<d, 1u>, TCampo<d, r - 1u>, std::multiplies<>> const &Expr)
+  { return {Expr}; }
+
+// =================================================================================================
+
+export
 template<std::size_t d, std::size_t r, CDimRanExpr<d, 1u> T>
 TDivImpl<d, r - 1u, T>
 div(TExprBinaria<d, r, T, TCampo<d, r - 1u>, std::multiplies<>> const &Expr)
@@ -481,6 +465,22 @@ export
 template<std::size_t d, std::size_t r, CDimRanExpr<d, 0u> T>
 TLap<d, r - 1u, T>
 div(TExprBinaria<d, r, T, TGrad<d, r, TCampo<d, r - 1u>>, std::multiplies<>> const &Expr)
+  { return {Expr}; }
+
+// =================================================================================================
+
+export
+template<std::size_t d, std::size_t r>
+TLap<d, r - 1u, TTensor<d, 2u>>
+div(TExprBinaria<d, r, TTensor<d, 2u>, TGrad<d, r, TCampo<d, r - 1u>>, std::bit_and<>> const &Expr)
+  { return {Expr}; }
+
+// =================================================================================================
+
+export
+template<std::size_t d, std::size_t r, CDimRanExpr<d, 2u> T>
+TLap<d, r - 1u, T>
+div(TExprBinaria<d, r, T, TGrad<d, r, TCampo<d, r - 1u>>, std::bit_and<>> const &Expr)
   { return {Expr}; }
 
 // =================================================================================================
@@ -506,6 +506,14 @@ export
 template<CExpr T>
 TGrad<DimExpr<T>, RangoExpr<T> + 1u, T>
 grad(T const &Expr)
+  { return {Expr}; }
+
+// =================================================================================================
+
+export
+template<std::size_t d>
+TLapT<d, 1u>
+grad(TDivExpl<d, 0u, TCampo<d, 1u>> const &Expr)
   { return {Expr}; }
 
 // =================================================================================================

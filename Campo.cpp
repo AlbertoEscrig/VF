@@ -59,7 +59,10 @@ private:
     { DefCC<T>(std::false_type{}, CCStr, *this, std::forward<TArgs>(Args)...); }
 
   TTensor<d, r>
-  Lap(TCelda<d> const &, TCara<d> const &, TTensor<d, r + 1u> const &) const;
+  Lap(TCelda<d> const &, TCara<d> const &, TTensor<d, r + 1u> const &, TVector<d> const &) const;
+
+  TTensor<d, r>
+  Lap(TCelda<d> const &, std::invocable<TCara<d> const &> auto const &) const;
 
   TTensor<d, r>
   LapT(TCelda<d> const &, TCara<d> const &, TTensor<d, r + 1u> const &) const;
@@ -132,10 +135,20 @@ public:
   using TExprBase<TCampo<d, r>>::GradT;
 
   TTensor<d, r>
-  Lap(TCelda<d> const &) const;
+  Lap(TCelda<d> const &Celda) const
+    { return Lap(Celda, [](TCara<d> const &Cara) { return Cara.Sf; }); }
 
   TTensor<d, r>
-  Lap(CDimRanExpr<d, 0u> auto const &, TCelda<d> const &) const;
+  Lap(CDimRanExpr<d, 0u> auto const &Γ, TCelda<d> const &Celda) const
+    { return Lap(Celda, [&Γ](TCara<d> const &Cara) { return Cara.Sf * Γ.Eval(Cara); }); }
+
+  TTensor<d, r>
+  Lap(TTensor<d, 2u> const &Γ, TCelda<d> const &Celda) const
+    { return Lap(Celda, [&Γ](TCara<d> const &Cara) { return Cara.Sf & Γ; }); }
+
+  TTensor<d, r>
+  Lap(CDimRanExpr<d, 2u> auto const &Γ, TCelda<d> const &Celda) const
+    { return Lap(Celda, [&Γ](TCara<d> const &Cara) { return Cara.Sf & Γ.Eval(Cara); }); }
 
   TTensor<d, r>
   LapT(TCelda<d> const &) const requires (r == 1u);
@@ -343,43 +356,29 @@ return Cara.Interpola(Eval(Cara.CeldaP()), Eval(Cara.CeldaN()));
 
 template<std::size_t d, std::size_t r>
 TTensor<d, r>
-TCampo<d, r>::Lap(TCelda<d> const &Celda, TCara<d> const &Cara,
-                  TTensor<d, r + 1u> const &gradφ) const
+TCampo<d, r>::Lap(TCelda<d> const &Celda, TCara<d> const &Cara, TTensor<d, r + 1u> const &gradφ,
+                  TVector<d> const &Sf) const
 {
 if (Cara.EsCC()) [[unlikely]]
   {
   auto const [aP, b] = GradCoef(Cara);
 
-  return mag(Cara.Sf) * (aP * Eval(Celda) + b);
+  return mag(Sf) * (aP * Eval(Celda) + b);
   }
-return Cara.Sf & Cara.Interpola(gradφ, Grad(Cara.CeldaN()));
+return Sf & Cara.Interpola(gradφ, Grad(Cara.CeldaN()));
 }
 
 // =================================================================================================
 
 template<std::size_t d, std::size_t r>
 TTensor<d, r>
-TCampo<d, r>::Lap(TCelda<d> const &Celda) const
+TCampo<d, r>::Lap(TCelda<d> const &Celda, std::invocable<TCara<d> const &> auto const &Sf) const
 {
 TTensor<d, r + 1u> const gradφ = Grad(Celda);
 TTensor<d, r> lapφ = {};
 
 for (auto &Cara : Celda)
-  lapφ += Lap(Celda, Cara, gradφ);
-return lapφ / Celda.V;
-}
-
-// =================================================================================================
-
-template<std::size_t d, std::size_t r>
-TTensor<d, r>
-TCampo<d, r>::Lap(CDimRanExpr<d, 0u> auto const &Γ, TCelda<d> const &Celda) const
-{
-TTensor<d, r + 1u> const gradφ = Grad(Celda);
-TTensor<d, r> lapφ = {};
-
-for (auto &Cara : Celda)
-  lapφ += Γ.Eval(Cara) * Lap(Celda, Cara, gradφ);
+  lapφ += Lap(Celda, Cara, gradφ, Sf(Cara));
 return lapφ / Celda.V;
 }
 

@@ -22,9 +22,9 @@ constexpr double ν = 0.01;
 
 constexpr double α = 0.7;
 
-constexpr TTensor<3u, 2u> T = { 1.0,  0.0,  0.0,
-                                0.0,  0.0,  1.0,
-                                0.0, -1.0,  0.0 };
+constexpr TTensor<3u, 2u> T = {1.0,  0.0,  0.0,
+                               0.0,  0.0,  1.0,
+                               0.0, -1.0,  0.0};
 
 int main()
 {

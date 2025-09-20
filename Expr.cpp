@@ -318,9 +318,11 @@ public:
 
 // ------------------------------------------------------------------------------------------ Amigos
 
-  friend class TDivImpl<d, r - 1u, T>;
+  template<std::size_t, std::size_t, typename>
+  friend class TDivImpl;
 
-  friend class TLap<d, r - 1u, T>;
+  template<std::size_t, std::size_t, typename>
+  friend class TLap;
 };
 
 // ======================================================================== IMPLEMENTACIÓN DE CLASES
