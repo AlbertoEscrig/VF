@@ -26,7 +26,7 @@ e = 1e-4;
 Physical Surface("hot") = {Surface In BoundingBox {-e, -e, -e, e, L + e, L + e}};
 
 Physical Surface("cold") =
-{
+  {
   Surface In BoundingBox {          - e,           - e,   - e,     L     + e,     L     + e,     e},
   Surface In BoundingBox {          - e,           - e,   - e,     L     + e,             e, L + e},
   Surface In BoundingBox {          - e,           - e, L - e,     L     + e,     L     + e, L + e},
@@ -36,6 +36,6 @@ Physical Surface("cold") =
   Surface In BoundingBox {    L / 3 - e, 2 * L / 3 - e,   - e, 2 * L / 3 + e, 2 * L / 3 + e, L + e},
   Surface In BoundingBox {2 * L / 3 - e,     L / 3 - e,   - e, 2 * L / 3 + e, 2 * L / 3 + e, L + e},
   Surface In BoundingBox {    L     - e,           - e,   - e,     L     + e,     L     + e, L + e}
-};
+  };
 
 Physical Volume("domain") = Volume{:};
