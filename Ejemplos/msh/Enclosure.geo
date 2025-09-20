@@ -8,26 +8,18 @@ N = 60;
 Point(1) = {0, 0, 0};
 
 out[] = Extrude {L / 3, 0, 0} { Point{1}; Layers{N / 3}; };
-C[] = out[1];
-
+C1 = out[1];
 out[] = Extrude {L / 3, 0, 0} { Point{out[0]}; Layers{N / 3}; };
-C[] += out[1];
-
+C2 = out[1];
 out[] = Extrude {L / 3, 0, 0} { Point{out[0]}; Layers{N / 3}; };
-C[] += out[1];
+C3 = out[1];
 
-out[] = Extrude {0, L / 3, 0} { Curve{C[]}; Layers{N / 3}; Recombine; };
-S[] = {out[1], out[5], out[9]};
-
-out[] = Extrude {0, L / 3, 0} { Curve{out[0], out[4], out[8]}; Layers{N /3}; Recombine; };
-S[] += {out[1], out[9]};
-
-Delete { Surface{out[5]}; }
-
+out[] = Extrude {0, L / 3, 0} { Curve{C1, C2, C3}; Layers{N / 3}; Recombine; };
 out[] = Extrude {0, L / 3, 0} { Curve{out[0], out[4], out[8]}; Layers{N / 3}; Recombine; };
-S[] += {out[1], out[5], out[9]};
+Delete { Surface{out[5]}; }
+out[] = Extrude {0, L / 3, 0} { Curve{out[0], out[4], out[8]}; Layers{N / 3}; Recombine; };
 
-out[] = Extrude {0, 0, L} { Surface{S[]}; Layers{N}; Recombine; };
+out[] = Extrude {0, 0, L} { Surface{:}; Layers{N}; Recombine; };
 
 e = 1e-4;
 
