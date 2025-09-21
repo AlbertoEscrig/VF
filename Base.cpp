@@ -151,9 +151,8 @@ else
 // ============================================================================================ lerp
 
 export
-template<typename T, typename U>
 auto
-constexpr lerp(T const &lhs, U const &rhs, double const f)
+constexpr lerp(auto const &lhs, auto const &rhs, double const f)
   { return (1.0 - f) * lhs + f * rhs; }
 
 } // VF
