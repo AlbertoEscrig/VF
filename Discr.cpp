@@ -213,9 +213,6 @@ private:
 // --------------------------------------------------------------------------------------- Funciones
 
 private:
-  std::tuple<double, double, TTensor<d, r>>
-  Coef(TCara<d> const &, TTensor<d, r + 1u> const &) const;
-
   TVector<d>
   SfΓf(TCara<d> const &Cara) const requires std::same_as<T, std::monostate>
     { return Cara.Sf; }
@@ -226,11 +223,14 @@ private:
 
   TVector<d>
   SfΓf(TCara<d> const &Cara) const requires std::same_as<T, TTensor<d, 2u>>
-    { return Cara.Sf & Γ.Eval(Cara); }
+    { return Cara.Sf & Γ; }
 
   TVector<d>
   SfΓf(TCara<d> const &Cara) const requires CDimRanExpr<T, d, 2u>
     { return Cara.Sf & Γ.Eval(Cara); }
+
+  std::tuple<double, double, TTensor<d, r>>
+  Coef(TCara<d> const &, TTensor<d, r + 1u> const &) const;
 
 public:
   TLap(TCampo<d, r> const &φ_) :

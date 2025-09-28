@@ -140,7 +140,7 @@ public:
 
   TTensor<d, r>
   Lap(TCelda<d> const &Celda) const
-    { return Lap(Celda, [](TCara<d> const &Cara) { return Cara.Sf; }); }
+    { return Lap(Celda, [](TCara<d> const &Cara) static { return Cara.Sf; }); }
 
   TTensor<d, r>
   Lap(CDimRanExpr<d, 0u> auto const &Γ, TCelda<d> const &Celda) const

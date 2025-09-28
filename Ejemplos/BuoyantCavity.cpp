@@ -19,8 +19,6 @@ private:
   VF::TVector<d> const g;
 
 public:
-  TGradPresionDin() = delete;
-
   TGradPresionDin(VF::TCampoEscalar<d> const &ρ_, VF::TVector<d> const &g_) :
     ρ(ρ_), g(g_) {}
 
