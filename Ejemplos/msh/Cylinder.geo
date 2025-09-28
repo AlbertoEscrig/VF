@@ -31,8 +31,8 @@ Curve(10) = {11, 2};
 Curve Loop(1) = {1:10};
 Plane Surface(1) = {1};
 
-Transfinite Curve{1, 4, 5, 6, 9, 10} = 75;
-Transfinite Curve{2, 3, 7, 8} = 25;
+Transfinite Curve{1, 4, 5, 6, 9, 10} = 60;
+Transfinite Curve{2, 3, 7, 8} = 20;
 
 Transfinite Surface{1} = {2, 6, 7, 11};
 Recombine Surface{1};
