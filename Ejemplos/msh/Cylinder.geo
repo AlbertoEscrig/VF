@@ -1,52 +1,48 @@
 // vim: syntax=gmsh
 
-SetFactory("Built-in");
+SetFactory("OpenCASCADE");
 
-Point(1) = {0.5, 0, 0};
+R = 0.5;
+L = 2;
 
-Extrude {0.5, 0, 0} { Point{1}; }
-Extrude {{0, 0, 1}, {0, 0, 0}, Pi / 4} { Curve{1}; }
+Point(1)  = { 0, 0, 0};
+Point(2)  = {-L, 0, 0};
+Point(3)  = {-R, 0, 0};
+Point(4)  = { 0, R, 0};
+Point(5)  = { R, 0, 0};
+Point(6)  = { L, 0, 0};
+Point(7)  = { L, L, 0};
+Point(8)  = { R, L, 0};
+Point(9)  = { 0, L, 0};
+Point(10) = {-R, L, 0};
+Point(11) = {-L, L, 0};
 
-Point(5) = {2, 0, 0};
-Point(6) = {2, Sin(Pi / 4), 0};
+Curve(1)  = {2, 3};
+Circle(2) = {3, 1, 4};
+Circle(3) = {4, 1, 5};
+Curve(4)  = {5, 6};
+Curve(5)  = {6, 7};
+Curve(6)  = {7, 8};
+Curve(7)  = {8, 9};
+Curve(8)  = {9, 10};
+Curve(9)  = {10, 11};
+Curve(10) = {11, 2};
 
-Curve(5) = {5, 2};
-Curve(6) = {6, 5};
-Curve(7) = {4, 6};
+Curve Loop(1) = {1:10};
+Plane Surface(1) = {1};
 
-Curve Loop(7) = {4:7};
-Plane Surface(7) = {7};
+Transfinite Curve{1, 4, 5, 6, 9, 10} = 75;
+Transfinite Curve{2, 3, 7, 8} = 25;
 
-Extrude {{0, 0, 1}, {0, 0, 0}, Pi / 4} { Curve{2}; }
+Transfinite Surface{1} = {2, 6, 7, 11};
+Recombine Surface{1};
 
-Point(12) = {0, 2, 0};
-Point(13) = {Sin(Pi / 4), 2, 0};
-Point(14) = {2, 2, 0};
+Mesh.Smoothing = 100;
 
-Curve(11) = {13, 4};
-Curve(12) = {12, 13};
-Curve(13) = {10, 12};
-Curve(14) = {6, 14};
-Curve(15) = {14, 13};
+Physical Curve("cylinder") = {2, 3};
+Physical Curve("down")     = {1, 4};
+Physical Curve("up")       = {6, 7, 8, 9};
+Physical Curve("right")    = {5};
+Physical Curve("left")     = {10};
 
-Curve Loop(12) = {10:13};
-Plane Surface(12) = {12};
-
-Curve Loop(13) = {7, 11, 14, 15};
-Plane Surface(13) = {13};
-
-Symmetry {1, 0, 0, 0} { Duplicata{ Surface{:}; } }
-
-Coherence;
-
-Transfinite Curve{:} = 20;
-Transfinite Surface{:};
-Recombine Surface{:};
-
-Physical Curve("cylinder") = {3, 9, 20, 30};
-Physical Curve("down")     = {1, 5, 17, 25};
-Physical Curve("up")       = {12, 15, 34, 39};
-Physical Curve("right")    = {6, 14};
-Physical Curve("left")     = {24, 38};
-
-Physical Surface("domain") = Surface{:};
+Physical Surface("domain") = {1};

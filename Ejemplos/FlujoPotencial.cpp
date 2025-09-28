@@ -51,7 +51,7 @@ do
 
   U -= grad(p);
   }
-while (sum(mag(p)) > 1e-2);
+while (sum(mag(grad(p))) > 1e-3 * sum(mag(U)));
 
 // ------------------------------------------------------------------------------ Campo de presiones
 
