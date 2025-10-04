@@ -1,9 +1,11 @@
 // vim: syntax=gmsh
 
+SetFactory("Built-in");
+
 Merge "flange.stl";
 
 Surface Loop(1) = Surface{:};
-Volume(1) = 1;
+Volume(1) = {1};
 
 Physical Volume("domain") = {1};
 

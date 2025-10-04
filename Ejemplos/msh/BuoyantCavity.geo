@@ -2,9 +2,9 @@
 
 SetFactory("OpenCASCADE");
 
-p1 = newp; Point(p1) = {0, 0, 0};
+Point(1) = {0, 0, 0};
 
-out[] = Extrude {0.1, 0, 0} { Point{p1}; };
+out[] = Extrude {0.1, 0, 0} { Point{1}; };
 
 L1 = out[1];
 

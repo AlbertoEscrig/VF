@@ -9,16 +9,14 @@
 import VF;
 import std;
 
-using namespace VF;
-using namespace std;
-
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr double dt      = 5e-5,
+constexpr double dt      = 2e-5,
                  dtWrite = 1e-2,
-                 tFin    = 0.8;
+                 tFin    = 0.6;
 
-constexpr TVector2D U0 = {1.0, 0.0};
+constexpr VF::TVector2D U0 = {1.0, 0.0},
+                        δU = {0.0, 0.01};
 
 constexpr double ν = 1e-5;
 
@@ -26,34 +24,34 @@ int main()
 {
 // ------------------------------------------------------------------------------------------- Malla
 
-TMalla2D::Read("VortexStreet.msh");
+VF::TMalla2D::Read("VortexStreet.msh");
 
 // ------------------------------------------------------------------------------------------ Campos
 
-TCampoVectorial2D U;
-TCampoEscalar2D p;
+VF::TCampoVectorial2D U;
+VF::TCampoEscalar2D p;
 
 // ------------------------------------------------------------------------- Condiciones de contorno
 
-U.DefCC<TDirichlet>("inlet", U0);
-U.DefCC<TDirichlet>("cylinder");
-U.DefCC<TSimetria>("up");
-U.DefCC<TSimetria>("down");
-p.DefCC<TDirichlet>("outlet");
+U.DefCC<VF::TDirichlet>("inlet", U0);
+U.DefCC<VF::TDirichlet>("cylinder");
+U.DefCC<VF::TSimetria>("up");
+U.DefCC<VF::TSimetria>("down");
+p.DefCC<VF::TDirichlet>("outlet");
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 
-U = U0;
+U = U0 + δU;
 
 for (double t = dt; t < tFin + dt; t += dt)
   {
 // ------------------------------------------------------------------------------- Campos calculados
 
-  TCampo const gradp = grad(p);
+  VF::TCampo const gradp = grad(p);
 
 // ---------------------------------------------------------------------------------- Momento lineal
 
-  TSistema const UEc = d(U) / dt + div(U * U) - ν * lap(U) == -gradp;
+  VF::TSistema const UEc = d(U) / dt + div(U * U) - ν * lap(U) == -gradp;
 
   solve(UEc, U);
 
@@ -61,9 +59,9 @@ for (double t = dt; t < tFin + dt; t += dt)
 
   while (true)
     {
-    TCampo const pOld = p;
+    VF::TCampo const pOld = p;
 
-    U = TCampo((UEc.b + gradp - UEc.ΣaN(U)) / UEc.aP);
+    U = VF::TCampo((UEc.b + gradp - UEc.ΣaN(U)) / UEc.aP);
 
     solve(div((1.0 / UEc.aP) * grad(p)) == div(U), p);
 
@@ -75,13 +73,13 @@ for (double t = dt; t < tFin + dt; t += dt)
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (fmod(t, dtWrite) < dt)
+  if (std::fmod(t, dtWrite) < dt)
     {
     static int i = 0;
 
-    ofstream ofs(format("resu{:02d}.vtk", i++));
+    std::ofstream ofs(std::format("resu{:02d}.vtk", i++));
 
-    TMalla2D::Write(ofs);
+    VF::TMalla2D::Write(ofs);
     U.Write(ofs, "U");
     p.Write(ofs, "p");
     }

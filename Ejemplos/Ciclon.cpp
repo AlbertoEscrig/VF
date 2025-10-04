@@ -8,12 +8,9 @@
 
 #include "kEpsilon.h"
 
-using namespace VF;
-using namespace std;
-
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr TVector3D U0 = {10.0, 0.0, 0.0};
+constexpr VF::TVector3D U0 = {10.0, 0.0, 0.0};
 
 constexpr double k0 = 0.375,
                  ε0 = 6.41;
@@ -26,29 +23,29 @@ int main()
 {
 // ------------------------------------------------------------------------------------------- Malla
 
-TMalla3D::Read("Ciclon.msh");
+VF::TMalla3D::Read("Ciclon.msh");
 
 // ------------------------------------------------------------------------------------------ Campos
 
-TCampoVectorial3D U;
-TCampoEscalar3D p,
-                k,
-                ε,
-                νt,
-                νEf;
+VF::TCampoVectorial3D U;
+VF::TCampoEscalar3D p,
+                    k,
+                    ε,
+                    νt,
+                    νEf;
 
 // ------------------------------------------------------------------------- Condiciones de contorno
 
-U.DefCC<TDirichlet>("inlet", U0);
-k.DefCC<TDirichlet>("inlet", k0);
-ε.DefCC<TDirichlet>("inlet", ε0);
+U.DefCC<VF::TDirichlet>("inlet", U0);
+k.DefCC<VF::TDirichlet>("inlet", k0);
+ε.DefCC<VF::TDirichlet>("inlet", ε0);
 
-U.DefCC<TDirichlet>("wall");
+U.DefCC<VF::TDirichlet>("wall");
 k.DefCC<TkWallFunc>("wall");
 ε.DefCC<TεWallFunc>("wall", k);
 νEf.DefCC<TμEfWallFunc>("wall", k, ν);
 
-p.DefCC<TDirichlet>("outlet");
+p.DefCC<VF::TDirichlet>("outlet");
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 
@@ -68,15 +65,15 @@ while (true)
 
   νEf = ν + νt;
 
-  TSistema const UEc = div(U * U) - div(νEf * grad(U)) == (grad(νt) & gradT(U)) - grad(p);
+  VF::TSistema const UEc = div(U * U) - div(νEf * grad(U)) == (grad(νt) & gradT(U)) - grad(p);
 
   solve(UEc, U, α);
 
 // ------------------------------------------------------------------------------------- Continuidad
 
-  U = TCampo((UEc.b + grad(p) - UEc.ΣaN(U)) / UEc.aP);
+  U = VF::TCampo((UEc.b + grad(p) - UEc.ΣaN(U)) / UEc.aP);
 
-  TCampo const pOld = p;
+  VF::TCampo const pOld = p;
 
   solve(div((1.0 / UEc.aP) * grad(p)) == div(U), p);
 
@@ -89,7 +86,7 @@ while (true)
 
 // ----------------------------------------------------------------------------- Transporte de k y ε
 
-  TCampo const ω = ε / k;
+  VF::TCampo const ω = ε / k;
 
   auto const G = νt * ((grad(U) + gradT(U)) && grad(U));
 
@@ -100,9 +97,9 @@ while (true)
 
 // -------------------------------------------------------------------------------------- Resultados
 
-ofstream ofs("resu.vtk");
+std::ofstream ofs("resu.vtk");
 
-TMalla3D::Write(ofs);
+VF::TMalla3D::Write(ofs);
 U.Write(ofs, "U");
 p.Write(ofs, "p");
 k.Write(ofs, "k");

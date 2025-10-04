@@ -12,12 +12,19 @@ out[] = Extrude {0, 0, 2} { Surface{out[1]}; Layers{N}; Recombine; };
 
 Mesh 3;
 
-Periodic Surface{6} = {1} Translate {0, 0, 2};
-Periodic Surface{5} = {4} Translate {0, 2, 0};
-Periodic Surface{3} = {2} Translate {2, 0, 0};
+S1 = Surface In BoundingBox {-1.01, -1.01, -1.01,  1.01,  1.01, -0.99};
+S2 = Surface In BoundingBox {-1.01, -1.01,  0.99,  1.01,  1.01,  1.01};
+S3 = Surface In BoundingBox {-1.01, -1.01, -1.01,  1.01, -0.99,  1.01};
+S4 = Surface In BoundingBox {-1.01,  0.99, -1.01,  1.01,  1.01,  1.01};
+S5 = Surface In BoundingBox {-1.01, -1.01, -1.01, -0.99,  1.01,  1.01};
+S6 = Surface In BoundingBox { 0.99, -1.01, -1.01,  1.01,  1.01,  1.01};
 
-Physical Surface("xy plane") = {1, 6};
-Physical Surface("xz plane") = {4, 5};
-Physical Surface("yz plane") = {2, 3};
+Periodic Surface{S2} = {S1} Translate {0, 0, 2};
+Periodic Surface{S4} = {S3} Translate {0, 2, 0};
+Periodic Surface{S6} = {S5} Translate {2, 0, 0};
 
-Physical Volume("domain") = {1};
+Physical Surface("xy plane") = {S1, S2};
+Physical Surface("xz plane") = {S3, S4};
+Physical Surface("yz plane") = {S5, S6};
+
+Physical Volume("domain") = Volume{:};
