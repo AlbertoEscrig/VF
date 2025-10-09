@@ -23,8 +23,8 @@ constexpr double μ    = 1e-3,    // Pa s
                  ρRef = 1e3,     // kg / m³
                  ψ    = 4.54e-7; // s² / m²
 
-constexpr double dt      = 0.1e-6,
-                 dtWrite =  10e-6,
+constexpr double Δt      = 0.1e-6,
+                 ΔtWrite =  10e-6,
                  tFin    = 250e-6;
 
 int main()
@@ -49,7 +49,7 @@ U.DefCC<TSimetria>("axis");
 p = p0;
 U = U0;
 
-for (double t = dt; t < tFin + dt; t += dt)
+for (double t = Δt; t < tFin + Δt; t += Δt)
   {
   TCampo const UOld = U;
   TCampo const pOld = p;
@@ -63,7 +63,7 @@ for (double t = dt; t < tFin + dt; t += dt)
 // ---------------------------------------------------------------------------------- Momento lineal
 
     TSistema const UEc =
-      ρ * Sp(U) / dt - div(ρ * U) * Sp(U) + div(ρ * U * U) - μ * lap(U) == ρ * UOld / dt - grad(p);
+      ρ * Sp(U) / Δt - div(ρ * U) * Sp(U) + div(ρ * U * U) - μ * lap(U) == ρ * UOld / Δt - grad(p);
 
     solve(UEc, U);
 
@@ -74,7 +74,7 @@ for (double t = dt; t < tFin + dt; t += dt)
     U = TCampo((UEc.b + grad(p) - UEc.ΣaN(U)) / UEc.aP);
 
     TSistema const pEc =
-      ψ * Sp(p) / dt + ψ * div(U * p) - div((ρ / UEc.aP) * grad(p)) == ψ * pOld / dt - div(ρ * U);
+      ψ * Sp(p) / Δt + ψ * div(U * p) - div((ρ / UEc.aP) * grad(p)) == ψ * pOld / Δt - div(ρ * U);
 
     solve(pEc, p);
 
@@ -86,7 +86,7 @@ for (double t = dt; t < tFin + dt; t += dt)
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (fmod(t, dtWrite) < dt)
+  if (fmod(t, ΔtWrite) < Δt)
     {
     static int i = 0;
 

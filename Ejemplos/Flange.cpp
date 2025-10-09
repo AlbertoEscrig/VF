@@ -11,8 +11,8 @@ import std;
 
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr double dt      = 0.005,
-                 dtWrite = 0.1,
+constexpr double Δt      = 0.005,
+                 ΔtWrite = 0.1,
                  tFin    = 3.0;
 
 constexpr double α = 4e-5;
@@ -36,17 +36,17 @@ T.DefCC<VF::TDirichlet>("cold", 273.0);
 
 T = 273.0;
 
-for (double t = dt; t < tFin + dt; t += dt)
+for (double t = Δt; t < tFin + Δt; t += Δt)
   {
 // ---------------------------------------------------------------------------------------- Solución
 
-  solve(d(T) / dt - α * lap(T) == 0, T); // Euler implícito
-  // solve(d(T) / dt - 0.5 * α * lap(T) == 0.5 * α * lap(T), T); // Crank-Nicolson
-  // solve(d(T) / dt == α * lap(T), T); // Euler explícito
+  solve(Δ(T) / Δt - α * lap(T) == 0, T); // Euler implícito
+  // solve(Δ(T) / Δt - 0.5 * α * lap(T) == 0.5 * α * lap(T), T); // Crank-Nicolson
+  // solve(Δ(T) / Δt == α * lap(T), T); // Euler explícito
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (std::fmod(t, dtWrite) < dt)
+  if (std::fmod(t, ΔtWrite) < Δt)
     {
     static int i = 0;
 

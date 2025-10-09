@@ -23,8 +23,8 @@ constexpr TVector2D U0 = {3.0, 0.0}; // Mach 3
 constexpr double p0 = 1.0,
                  T0 = 1.0;
 
-constexpr double dt      = 0.002,
-                 dtWrite = 0.5,
+constexpr double Δt      = 0.002,
+                 ΔtWrite = 0.5,
                  tFin    = 5.0;
 
 constexpr auto I = TTensor<2u, 2u>::I();
@@ -59,7 +59,7 @@ U = U0;
 p = p0;
 T = T0;
 
-for (double t = dt; t < tFin + dt; t += dt)
+for (double t = Δt; t < tFin + Δt; t += Δt)
   {
   TCampo const UOld = U;
   TCampo const pOld = p;
@@ -74,9 +74,9 @@ for (double t = dt; t < tFin + dt; t += dt)
 // ---------------------------------------------------------------------------------- Momento lineal
 
     TSistema const UEc =
-      ρ * Sp(U) / dt - div(ρ * U) * Sp(U) + div(ρ * U * U) - μ * lap(U)
+      ρ * Sp(U) / Δt - div(ρ * U) * Sp(U) + div(ρ * U * U) - μ * lap(U)
       ==
-      ρ * UOld / dt + μ * grad(div(U)) / 3.0 - grad(p);
+      ρ * UOld / Δt + μ * grad(div(U)) / 3.0 - grad(p);
 
     solve(UEc, U);
 
@@ -87,9 +87,9 @@ for (double t = dt; t < tFin + dt; t += dt)
     U = TCampo((UEc.b + grad(p) - UEc.ΣaN(U)) / UEc.aP);
 
     TSistema const pEc =
-      Sp(p) / (R * T) / dt + div((U / (R * T)) * p) - div((ρ / UEc.aP) * grad(p))
+      Sp(p) / (R * T) / Δt + div((U / (R * T)) * p) - div((ρ / UEc.aP) * grad(p))
       ==
-      pOld / (R * TOld) / dt - div(ρ * U);
+      pOld / (R * TOld) / Δt - div(ρ * U);
 
     solve(pEc, p);
 
@@ -103,16 +103,16 @@ for (double t = dt; t < tFin + dt; t += dt)
     auto const G = μ * ((grad(U) + gradT(U) - 2.0 / 3.0 * div(U) * I) && grad(U));
 
     TSistema const TEc =
-      Cv * (ρ * Sp(T) / dt - div(ρ * U) * Sp(T) + div(ρ * U * T)) - λ * lap(T)
+      Cv * (ρ * Sp(T) / Δt - div(ρ * U) * Sp(T) + div(ρ * U * T)) - λ * lap(T)
       ==
-      ρ * Cv * TOld / dt + G - p * div(U);
+      ρ * Cv * TOld / Δt + G - p * div(U);
 
     solve(TEc, T);
     }
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (fmod(t, dtWrite) < dt)
+  if (fmod(t, ΔtWrite) < Δt)
     {
     static int i = 0;
 

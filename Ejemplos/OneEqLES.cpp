@@ -14,8 +14,8 @@ using namespace std;
 
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr double dt      = 1e-5,
-                 dtWrite = 1e-2,
+constexpr double Δt      = 1e-5,
+                 ΔtWrite = 1e-2,
                  tFin    = 0.2;
 
 constexpr TVector2D U0 = {10.0, 0.0};
@@ -54,19 +54,19 @@ k = k0;
 
 // ------------------------------------------------------------------------------- Campos calculados
 
-auto const Δ = sqrt(TMalla2D::V()); // 2D
-//auto const Δ = cbrt(TMalla3D::V()); // 3D
+auto const l = sqrt(TMalla2D::V()); // 2D
+//auto const l = cbrt(TMalla3D::V()); // 3D
 
-for (double t = dt; t < tFin + dt; t += dt)
+for (double t = Δt; t < tFin + Δt; t += Δt)
   {
-  TCampo const νt = Ck * sqrt(k) * Δ;
+  TCampo const νt = Ck * sqrt(k) * l;
 
   TCampo const gradp = grad(p);
 
 // ---------------------------------------------------------------------------------- Momento lineal
 
   TSistema const UEc =
-    d(U) / dt + div(U * U) - div((ν + νt) * grad(U)) == (grad(νt) & gradT(U)) - gradp;
+    Δ(U) / Δt + div(U * U) - div((ν + νt) * grad(U)) == (grad(νt) & gradT(U)) - gradp;
 
   solve(UEc, U);
 
@@ -90,13 +90,13 @@ for (double t = dt; t < tFin + dt; t += dt)
 
   auto const G = νt * ((grad(U) + gradT(U)) && grad(U));
 
-  solve(d(k) / dt + div(U * k) - div((ν + νt) * grad(k)) + (Cε * sqrt(k) / Δ) * Sp(k) == G, k);
+  solve(Δ(k) / Δt + div(U * k) - div((ν + νt) * grad(k)) + (Cε * sqrt(k) / l) * Sp(k) == G, k);
 
   k = max(k, 0.0);
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (fmod(t, dtWrite) < dt)
+  if (fmod(t, ΔtWrite) < Δt)
     {
     static int i = 0;
 

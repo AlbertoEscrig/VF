@@ -20,8 +20,8 @@ constexpr VF::TVector3D i = {1.0, 0.0, 0.0},
                         j = {0.0, 1.0, 0.0},
                         k = {0.0, 0.0, 1.0};
 
-constexpr double dt      = 0.005,
-                 dtWrite = 0.1,
+constexpr double Δt      = 0.005,
+                 ΔtWrite = 0.1,
                  tFin    = 4.0;
 
 int main()
@@ -58,15 +58,15 @@ solve(lap(U) == -rot(ω), U);
 
 // ---------------------------------------------------------------------------------------- Solución
 
-for (double t = dt; t < tFin + dt; t += dt)
+for (double t = Δt; t < tFin + Δt; t += Δt)
   {
-  solve(d(ω) / dt + div(U * ω) - ν * lap(ω) == (ω & grad(U)), ω);
+  solve(Δ(ω) / Δt + div(U * ω) - ν * lap(ω) == (ω & grad(U)), ω);
 
   solve(lap(U) == -rot(ω), U);
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (std::fmod(t, dtWrite) < dt)
+  if (std::fmod(t, ΔtWrite) < Δt)
     {
     static int i = 0;
 

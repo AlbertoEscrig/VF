@@ -14,8 +14,8 @@ using namespace std;
 
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr double dt      = 1e-5,
-                 dtWrite = 1e-2,
+constexpr double Δt      = 1e-5,
+                 ΔtWrite = 1e-2,
                  tFin    = 0.2;
 
 constexpr TVector2D U0 = {10.0, 0.0};
@@ -45,7 +45,7 @@ p.DefCC<TDirichlet>("outlet");
 
 U = U0;
 
-for (double t = dt; t < tFin + dt; t += dt)
+for (double t = Δt; t < tFin + Δt; t += Δt)
   {
 // ------------------------------------------------------------------------------- Campos calculados
 
@@ -57,7 +57,7 @@ for (double t = dt; t < tFin + dt; t += dt)
 // ---------------------------------------------------------------------------------- Momento lineal
 
   TSistema const UEc =
-    d(U) / dt + div(U * U) - div((ν + νt) * grad(U)) == (grad(νt) & gradT(U)) - gradp;
+    Δ(U) / Δt + div(U * U) - div((ν + νt) * grad(U)) == (grad(νt) & gradT(U)) - gradp;
 
   solve(UEc, U);
 
@@ -79,7 +79,7 @@ for (double t = dt; t < tFin + dt; t += dt)
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (fmod(t, dtWrite) < dt)
+  if (fmod(t, ΔtWrite) < Δt)
     {
     static int i = 0;
 

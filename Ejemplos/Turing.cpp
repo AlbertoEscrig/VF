@@ -16,8 +16,8 @@ constexpr double Du = 2e-5,
                  f  = 0.0367,
                  k  = 0.0649;
 
-constexpr double dt      = 1.0,
-                 dtWrite = 500.0,
+constexpr double Δt      = 1.0,
+                 ΔtWrite = 500.0,
                  tFin    = 30'000.0;
 
 int main()
@@ -39,17 +39,17 @@ u.Asigna("seed", 0.5);
 v.Asigna("rest", 0.0);
 v.Asigna("seed", 0.25);
 
-for (double t = dt; t < tFin + dt; t += dt)
+for (double t = Δt; t < tFin + Δt; t += Δt)
   {
 // ---------------------------------------------------------------------------------------- Solución
 
-  solve(d(u) / dt - Du * lap(u) + v * v * Sp(u) + f       * Sp(u) == f, u);
+  solve(Δ(u) / Δt - Du * lap(u) + v * v * Sp(u) + f       * Sp(u) == f, u);
 
-  solve(d(v) / dt - Dv * lap(v) - u * v * Sp(v) + (f + k) * Sp(v) == 0, v);
+  solve(Δ(v) / Δt - Dv * lap(v) - u * v * Sp(v) + (f + k) * Sp(v) == 0, v);
 
 // -------------------------------------------------------------------------------------- Resultados
 
-  if (std::fmod(t, dtWrite) < dt)
+  if (std::fmod(t, ΔtWrite) < Δt)
     {
     static int i = 0;
 

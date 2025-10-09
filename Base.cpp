@@ -55,10 +55,10 @@ template<std::size_t, std::size_t>
 class TCampo;
 
 // =================================================================================================
-// ============================================================================================== Td
+// ============================================================================================== TΔ
 
 template<std::size_t, std::size_t>
-class Td;
+class TΔ;
 
 // =================================================================================================
 // ======================================================================================== TSistema
@@ -123,7 +123,7 @@ template<typename>
 inline constexpr bool EsTransi = false;
 
 template<std::size_t d, std::size_t r>
-inline constexpr bool EsTransi<Td<d, r>> = true;
+inline constexpr bool EsTransi<TΔ<d, r>> = true;
 
 template<std::size_t d, std::size_t r, typename T, typename TOp>
 inline constexpr bool EsTransi<TExprUnaria<d, r, T, TOp>> = EsTransi<T>;
