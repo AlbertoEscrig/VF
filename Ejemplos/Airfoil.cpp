@@ -37,7 +37,7 @@ class TCCω : public VF::TCCBase<d, 0u>
 public:
   std::tuple<double, VF::TTensor<d, 0u>>
   virtual Coef(VF::TCara<d> const &Cara) const override
-    { VF::TVector const L = Cara.L(); return {0.0, 6.0 * ν / (β * (L & L))}; }
+    { double const L = Cara.L(); return {0.0, 6.0 * ν / (β * L * L)}; }
 };
 
 int main()

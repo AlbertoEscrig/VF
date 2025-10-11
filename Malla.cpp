@@ -105,9 +105,9 @@ public:
   nf() const
     { return Sf / mag(Sf); }
 
-  TVector<d> const
+  double
   L() const
-    { return (((Cf - CeldaP().C) & Sf) / (Sf & Sf)) * Sf; }
+    { return (Cf - CeldaP().C) & nf(); }
 
   TVector<d>
   δ() const

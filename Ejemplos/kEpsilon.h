@@ -73,7 +73,7 @@ public:
 
   std::tuple<double, VF::TTensor<d, 0u>>
   virtual GradCoef(VF::TCara<d> const &Cara) const override
-    { VF::TVector const L = Cara.L(); return {0.0, VF::pow<3u>(Uτ(Cara)) / (κ * (L & L))}; }
+    { double const L = Cara.L(); return {0.0, VF::pow<3u>(Uτ(Cara)) / (κ * L * L)}; }
 };
 
 // =================================================================================================
@@ -107,7 +107,7 @@ template<std::size_t d, std::size_t r> requires (r == 0u)
 std::tuple<double, VF::TTensor<d, 0u>>
 TμEfWallFunc<d, r>::Coef(VF::TCara<d> const &Cara) const
 {
-double const yPlus = Uτ(Cara) * mag(Cara.L()) / μ;
+double const yPlus = Uτ(Cara) * Cara.L() / μ;
 
 return {0.0, μ * κ * yPlus / std::log(E * yPlus)};
 }

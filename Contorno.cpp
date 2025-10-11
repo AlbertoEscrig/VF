@@ -65,7 +65,7 @@ public:
 
   std::tuple<double, TTensor<d, r>>
   virtual GradCoef(TCara<d> const &Cara) const override
-    { double const magL = mag(Cara.L()); return {-1.0 / magL, φb / magL}; }
+    { double const L = Cara.L(); return {-1.0 / L, φb / L}; }
 };
 
 // =================================================================================================
@@ -87,7 +87,7 @@ public:
 
   std::tuple<double, TTensor<d, r>>
   virtual Coef(TCara<d> const &Cara) const override
-    { return {1.0, mag(Cara.L()) * gb}; }
+    { return {1.0, Cara.L() * gb}; }
 
   std::tuple<double, TTensor<d, r>>
   virtual GradCoef(TCara<d> const &) const override
@@ -114,7 +114,7 @@ public:
 
   std::tuple<double, TTensor<d, r>>
   virtual GradCoef(TCara<d> const &Cara) const override
-    { double const magL = mag(Cara.L()); return {-1.0 / (k / h + magL), φb / (k / h + magL)}; }
+    { double const L = Cara.L(); return {-1.0 / (k / h + L), φb / (k / h + L)}; }
 };
 
 // =================================================================================================
@@ -181,9 +181,9 @@ std::tuple<double, TTensor<d, r>>
 TCCBase<d, r>::Coef(TCara<d> const &Cara) const
 {
 auto const [aP, b] = GradCoef(Cara);
-double const magL = mag(Cara.L());
+double const L = Cara.L();
 
-return {1.0 + magL * aP, magL * b};
+return {1.0 + L * aP, L * b};
 }
 
 // =================================================================================================
@@ -193,9 +193,9 @@ std::tuple<double, TTensor<d, r>>
 TCCBase<d, r>::GradCoef(TCara<d> const &Cara) const
 {
 auto const [aP, b] = Coef(Cara);
-double const magL = mag(Cara.L());
+double const L = Cara.L();
 
-return {(aP - 1.0) / magL, b / magL};
+return {(aP - 1.0) / L, b / L};
 }
 
 // =================================================================================================
