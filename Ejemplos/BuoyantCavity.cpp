@@ -62,18 +62,18 @@ VF::TCampoEscalar2D p,
 
 // ------------------------------------------------------------------------- Condiciones de contorno
 
-U.DefCC<VF::TDirichlet>("hotWall");
-p.DefCC<TGradPresionDin>("hotWall", ρ, g);
-T.DefCC<VF::TDirichlet>("hotWall", Thot);
-ρ.DefCC<VF::TDirichlet>("hotWall", p0 * M / (R * Thot));
+U.DefCC<VF::TDirichlet>("hot");
+p.DefCC<TGradPresionDin>("hot", ρ, g);
+T.DefCC<VF::TDirichlet>("hot", Thot);
+ρ.DefCC<VF::TDirichlet>("hot", p0 * M / (R * Thot));
 
-U.DefCC<VF::TDirichlet>("coldWall");
-p.DefCC<TGradPresionDin>("coldWall", ρ, g);
-T.DefCC<VF::TDirichlet>("coldWall", Tcold);
-ρ.DefCC<VF::TDirichlet>("coldWall", p0 * M / (R * Tcold));
+U.DefCC<VF::TDirichlet>("cold");
+p.DefCC<TGradPresionDin>("cold", ρ, g);
+T.DefCC<VF::TDirichlet>("cold", Tcold);
+ρ.DefCC<VF::TDirichlet>("cold", p0 * M / (R * Tcold));
 
-U.DefCC<VF::TDirichlet>("adiabaticWall");
-p.DefCC<TGradPresionDin>("adiabaticWall", ρ, g);
+U.DefCC<VF::TDirichlet>("adiabatic");
+p.DefCC<TGradPresionDin>("adiabatic", ρ, g);
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 

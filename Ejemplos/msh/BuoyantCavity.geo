@@ -20,8 +20,8 @@ Transfinite Curve{:} = 75 Using Bump 0.2;
 Transfinite Surface{:};
 Recombine Surface{:};
 
-Physical Curve("adiabaticWall") = {L1, L2};
-Physical Curve("hotWall")       = {L3};
-Physical Curve("coldWall")      = {L4};
+Physical Curve("adiabatic") = {L1, L2};
+Physical Curve("hot")       = {L3};
+Physical Curve("cold")      = {L4};
 
 Physical Surface("domain") = {S1};
