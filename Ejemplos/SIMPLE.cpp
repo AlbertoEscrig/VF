@@ -33,8 +33,8 @@ TCampoEscalar2D p;
 
 // ------------------------------------------------------------------------- Condiciones de contorno
 
-U.DefCC<TDirichlet>("movingWall", U0);
-U.DefCC<TDirichlet>("fixedWalls");
+U.DefCC<TDirichlet>("moving wall", U0);
+U.DefCC<TDirichlet>("fixed walls");
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 

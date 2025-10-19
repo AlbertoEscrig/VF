@@ -15,7 +15,7 @@ S1 = out[1];
 L3 = out[2];
 L4 = out[3];
 
-Physical Curve("fixedWalls") = {L1, L3, L4};
-Physical Curve("movingWall") = {L2};
+Physical Curve("fixed walls") = {L1, L3, L4};
+Physical Curve("moving wall") = {L2};
 
 Physical Surface("domain") = {S1};
