@@ -81,7 +81,7 @@ solve(lap(T) == 0, T);
 while (true)
   {
   for (unsigned int i = 0u; i < 24u; ++i)
-    solve(div(s[i] * I[i]) + a * Sp(I[i]) == a * σ * pow<4u>(T) / π, I[i]);
+    solve(div(s[i] * I[i]) + a * (+I[i]) == a * σ * pow<4u>(T) / π, I[i]);
 
   G = 0.0;
   for (unsigned int i = 0u; i < 24u; ++i)
@@ -89,7 +89,7 @@ while (true)
 
   VF::TCampo const TOld = T;
 
-  solve(4.0 * a * σ * pow<3u>(T) * Sp(T) - λ * lap(T) == a * G, T);
+  solve(4.0 * a * σ * pow<3u>(T) * (+T) - λ * lap(T) == a * G, T);
 
   if (max(mag(T - TOld)) < 0.1)
     break;

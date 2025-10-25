@@ -63,7 +63,7 @@ for (double t = Δt; t < tFin + Δt; t += Δt)
 // ---------------------------------------------------------------------------------- Momento lineal
 
     TSistema const UEc =
-      ρ * Sp(U) / Δt - div(ρ * U) * Sp(U) + div(ρ * U * U) - μ * lap(U) == ρ * UOld / Δt - grad(p);
+      ρ * (+U) / Δt - div(ρ * U) * (+U) + div(ρ * U * U) - μ * lap(U) == ρ * UOld / Δt - grad(p);
 
     solve(UEc, U);
 
@@ -74,7 +74,7 @@ for (double t = Δt; t < tFin + Δt; t += Δt)
     U = TCampo((UEc.b + grad(p) - UEc.ΣaN(U)) / UEc.aP);
 
     TSistema const pEc =
-      ψ * Sp(p) / Δt + ψ * div(U * p) - div((ρ / UEc.aP) * grad(p)) == ψ * pOld / Δt - div(ρ * U);
+      ψ * (+p) / Δt + ψ * div(U * p) - div((ρ / UEc.aP) * grad(p)) == ψ * pOld / Δt - div(ρ * U);
 
     solve(pEc, p);
 

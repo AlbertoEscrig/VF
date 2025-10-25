@@ -33,15 +33,18 @@ TCampoEscalar3D Ψ;
 
 // ------------------------------------------------------------------------------------- Expresiones
 
-auto const dV = 8.0 * TMalla3D::V();   // Se simula un octante
-auto const r  = mag(TMalla3D::C());    // Distancia al núcleo
-auto const HΨ = -lap(Ψ) / 2.0 - Ψ / r; // Hamiltoniano
+auto const dV = 8.0 * TMalla3D::V(); // Se simula un octante
+auto const r  = mag(TMalla3D::C());  // Distancia al núcleo
+
+// ------------------------------------------------------------------------------------ Hamiltoniano
+
+auto const H = [&r](auto const &Ψ) { return -lap(Ψ) / 2.0 - (+Ψ) / r; };
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 
 Ψ = 1.0 / sqrt(sum(dV));
 
-double E = sum(Ψ * HΨ * dV);
+double E = sum(Ψ * H(Ψ) * dV);
 
 while (true)
   {
@@ -49,11 +52,11 @@ while (true)
 
 // ---------------------------------------------------------------------------------------- Solución
 
-  solve(-lap(Ψ) / 2.0 - (1.0 / r - 1.0 / (2.0 * n * n)) * Sp(Ψ) == Ψ, Ψ);
+  solve(H(Ψ) + (+Ψ) / (2.0 * n * n) == Ψ, Ψ);
 
   Ψ /= sqrt(sum(Ψ * Ψ * dV));
 
-  E = sum(Ψ * HΨ * dV);
+  E = sum(Ψ * H(Ψ) * dV);
 
   if (abs(E - EOld) < 1e-7)
     break;

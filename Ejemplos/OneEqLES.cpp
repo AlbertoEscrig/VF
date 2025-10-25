@@ -90,7 +90,7 @@ for (double t = Δt; t < tFin + Δt; t += Δt)
 
   auto const G = νt * ((grad(U) + gradT(U)) && grad(U));
 
-  solve(Δ(k) / Δt + div(U * k) - div((ν + νt) * grad(k)) + (Cε * sqrt(k) / l) * Sp(k) == G, k);
+  solve(Δ(k) / Δt + div(U * k) - div((ν + νt) * grad(k)) + Cε * sqrt(k) * (+k) / l == G, k);
 
   k = max(k, 0.0);
 

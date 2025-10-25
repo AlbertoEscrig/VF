@@ -30,7 +30,7 @@
 //
 //      rot(φ)                ∇ ^ φ               No
 //
-//      Sp(φ)                   φ                 Sí
+//       (+φ)                   φ                 Sí
 
 // ===================================================================== DECLARACIÓN DE LA PARTICIÓN
 // =================================================================================================
@@ -327,6 +327,10 @@ public:
   &Eval(TCelda<d> const &Celda) const
     { return φ.Eval(Celda); }
 
+  TTensor<d, r> const
+  &Eval(std::size_t const i) const
+    { return φ.Eval(i); }
+
   template<bool>
   TCoef<d, r>
   Coef(TCelda<d> const &) const
@@ -433,7 +437,7 @@ for (auto const &[i, Cara] : Celda | std::views::enumerate)
 return Coef / Celda.V;
 }
 
-// ======================================================================================= FUNCIONES
+// ========================================================================== FUNCIONES Y OPERADORES
 // =============================================================================================== Δ
 
 export
@@ -549,7 +553,7 @@ rot(T const &Expr)
 export
 template<std::size_t d, std::size_t r>
 TSp<d, r>
-Sp(TCampo<d, r> const &φ)
+operator +(TCampo<d, r> const &φ)
   { return {φ}; }
 
 } // VF

@@ -113,9 +113,9 @@ while (true)
 
   auto const G = νt * ((grad(U) + gradT(U)) && grad(U));
 
-  solve(div(U * k) - div((ν + σk * νt) * grad(k)) + Cμ * ω * Sp(k) ==          G, k, α);
+  solve(div(U * k) - div((ν + σk * νt) * grad(k)) + Cμ * ω * (+k) ==          G, k, α);
 
-  solve(div(U * ω) - div((ν + σω * νt) * grad(ω)) + β  * ω * Sp(ω) == γ / νt * G, ω, α);
+  solve(div(U * ω) - div((ν + σω * νt) * grad(ω)) + β  * ω * (+ω) == γ / νt * G, ω, α);
   }
 
 // -------------------------------------------------------------------------------------- Resultados
