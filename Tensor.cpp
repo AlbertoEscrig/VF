@@ -81,7 +81,7 @@ private:
 
   template<std::size_t r2, std::size_t... i>
   TTensor<d, r1 + r2>
-  constexpr ProdExt(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
+  constexpr ProdOut(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
     { return {(TensorArr[i] * Tensor)...}; }
 
   template<std::size_t... i>
@@ -91,17 +91,17 @@ private:
 
   template<std::size_t r2, std::size_t... i>
   TTensor<d, r1 + r2 - 2u>
-  constexpr ProdInt(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
+  constexpr ProdIn(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
     { return (... + (SliceL<r1 - 1u, i>() * Tensor[i])); }
 
   template<std::size_t r2, std::size_t... i> requires (r1 == 1u)
   TTensor<d, r1 + r2 - 2u>
-  constexpr ProdInt(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
+  constexpr ProdIn(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
     { return (... + (TensorArr[i] * Tensor[i])); }
 
   template<std::size_t r2, std::size_t... i>
   TTensor<d, r1 + r2 - 4u>
-  constexpr ProdIntDbl(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
+  constexpr ProdInDbl(std::index_sequence<i...>, TTensor<d, r2> const &Tensor) const
     { return (... + (SliceL<r1 - 2u, i>() * Tensor.template SliceR<r2 - 2u, i>())); }
 
   template<std::size_t... i>
@@ -155,38 +155,38 @@ public:
   constexpr operator -() const
     { return Negativo(std::make_index_sequence<d>{}); }
 
-                                              // ----------------------- Producto exterior (T1 * T2)
+                                              // ---------------------- Producto tensorial (T1 * T2)
   template<std::size_t r2>
   TTensor<d, r1 + r2>
   constexpr operator *(TTensor<d, r2> const &Tensor) const
-    { return ProdExt(std::make_index_sequence<d>{}, Tensor); }
+    { return ProdOut(std::make_index_sequence<d>{}, Tensor); }
 
-                                              // -------------- Producto-asignación escalar (T *= s)
+                                              // ---------------------- Producto-asignación (T *= s)
   TTensor<d, r1>
   constexpr &operator *=(double const Escalar)
     { ProdAsigna(std::make_index_sequence<d>{}, Escalar); return *this; }
 
-                                              // -------------------------- División escalar (T / s)
+                                              // ---------------------------------- División (T / s)
   TTensor<d, r1>
   constexpr operator /(double const Escalar) const
     { return operator *(TTensor<d, 0u>(1.0 / Escalar)); }
 
-                                              // -------------- División-asignación escalar (T /= s)
+                                              // ---------------------- División-asignación (T /= s)
   TTensor<d, r1>
   constexpr &operator /=(double const Escalar)
     { return operator *=(1.0 / Escalar); }
 
-                                              // ----------------------- Producto interior (T1 & T2)
+                                              // ---------------------- Contracción simple (T1 & T2)
   template<std::size_t r2> requires (r1 >= 1u && r2 >= 1u)
   TTensor<d, r1 + r2 - 2u>
   constexpr operator &(TTensor<d, r2> const &Tensor) const
-    { return ProdInt(std::make_index_sequence<d>{}, Tensor); }
+    { return ProdIn(std::make_index_sequence<d>{}, Tensor); }
 
-                                              // ---------------- Producto interior doble (T1 && T2)
+                                              // ---------------------- Contracción doble (T1 && T2)
   template<std::size_t r2> requires (r1 >= 2u && r2 >= 2u)
   TTensor<d, r1 + r2 - 4u>
   constexpr operator &&(TTensor<d, r2> const &Tensor) const
-    { return ProdIntDbl(std::make_index_sequence<d * d>{}, Tensor); }
+    { return ProdInDbl(std::make_index_sequence<d * d>{}, Tensor); }
 
                                               // ------------ Acceso a componentes (T[i, j, k, ...])
   decltype(auto)
