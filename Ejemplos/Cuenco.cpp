@@ -9,18 +9,17 @@
 import VF;
 import std;
 
-
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr double a  = 10.0,
-                 κ2 = 4.0 * a * a;
+constexpr double a = 10.0,
+                 β = 4.0 * a * a;
 
 constexpr double Thot  = 10.0,
                  Tcold = 0.0;
 
 constexpr auto I = VF::TTensor<2u, 2u>::I();
 
-constexpr std::size_t NCorNoOrto = 5u;
+constexpr std::size_t NCorNoOrto = 10u;
 
 int main()
 {
@@ -42,7 +41,7 @@ T.DefCC<VF::TSimetria>("symmetry");
 
 auto const r = VF::TMalla2D::C();
 
-auto const K = ((1.0 + κ2 * (r & r)) * I - κ2 * (r * r)) / sqrt(1.0 + κ2 * (r & r));
+auto const K = ((1.0 + β * (r & r)) * I - β * (r * r)) / sqrt(1.0 + β * (r & r));
 
 for (std::size_t i = 0u; i < NCorNoOrto; ++i)
   solve(div(K & grad(T)) == 0.0, T);
