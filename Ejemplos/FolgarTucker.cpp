@@ -1,7 +1,7 @@
 // =================================================================================================
 // ================================================================================ FolgarTucker.cpp
 //
-// Orientación de una suspesión de fibras en un canal
+// Orientación de una suspesión de fibras que circula por un canal
 //
 // ================================================================= Copyright © 2025 Alberto Escrig
 // =================================================================================================
@@ -11,8 +11,8 @@ import std;
 
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr VF::TVector2D i = {1.0, 0.0},
-                        j = {0.0, 1.0};
+constexpr VF::TTensor<2u, 1u> i = {1.0, 0.0},
+                              j = {0.0, 1.0};
 
 constexpr VF::TTensor<2u, 2u> I = i * i + j * j;
 
@@ -23,7 +23,7 @@ constexpr double ν = 0.01,
                  ξ = 1.0,
                  C = 0.005;
 
-constexpr VF::TVector2D U0 = 1.0 * i;
+constexpr VF::TTensor<2u, 1u> U0 = 1.0 * i;
 
 constexpr VF::TTensor<2u, 2u> A0 = 0.5 * I;
 
@@ -45,7 +45,7 @@ int main()
 {
 // ------------------------------------------------------------------------------------------- Malla
 
-VF::TMalla2D::Read("FolgarTucker.msh");
+VF::TMalla<2u>::Read("FolgarTucker.msh");
 
 // ------------------------------------------------------------------------------------------ Campos
 
@@ -64,7 +64,7 @@ p.DefCC<VF::TDirichlet>("outlet");
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 
-U = U0 * (1.0 - pow<2u>((VF::TMalla2D::C() & j) / H));
+U = U0 * (1.0 - pow<2u>((VF::TMalla<2u>::C() & j) / H));
 
 A = A0;
 
@@ -97,7 +97,7 @@ while (true)
   auto const ω = (grad(U) - gradT(U)) / 2.0;
 
   VF::TSistema const AEc =
-    div(U * A) + 2.0 *  ξ * (γ && A) * (+A) + 3.0 * C * mag(γ) * (+A)
+    div(U * A) + 2.0 * ξ * (γ && A) * (+A) + 3.0 * C * mag(γ) * (+A)
     ==
     (A & ω) - (ω & A) + ξ * ((γ & A) + (A & γ)) + C * mag(γ) * I;
 
@@ -110,7 +110,7 @@ while (true)
 
 std::ofstream ofs("resu.vtk");
 
-VF::TMalla2D::Write(ofs);
+VF::TMalla<2u>::Write(ofs);
 p.Write(ofs, "p");
 U.Write(ofs, "U");
 A.Write(ofs, "A");

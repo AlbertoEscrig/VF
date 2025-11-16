@@ -18,8 +18,8 @@ Curve(4) = {4, 1};
 Curve Loop(1) = {1:4};
 Plane Surface(1) = {1};
 
-Transfinite Curve{1, -3} = 200;
-Transfinite Curve{-2, 4} = 100 Using Bump 0.5;
+Transfinite Curve{1, 3} = 200;
+Transfinite Curve{2, 4} = 100 Using Bump 0.5;
 
 Transfinite Surface{1};
 Recombine Surface{1};
