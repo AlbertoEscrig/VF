@@ -99,7 +99,7 @@ while (true)
   VF::TSistema const AEc =
     div(U * A) + 2.0 * ξ * (γ && A) * (+A) + 3.0 * C * mag(γ) * (+A)
     ==
-    (A & ω) - (ω & A) + ξ * ((γ & A) + (A & γ)) + C * mag(γ) * I;
+    (A & ω) - (ω & A) + ξ * ((A & γ) + (γ & A)) + C * mag(γ) * I;
 
   solve(AEc, A, α2);
 
