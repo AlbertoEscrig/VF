@@ -11,10 +11,12 @@ import std;
 
 // -------------------------------------------------------------------------------------- Constantes
 
-constexpr VF::TTensor<2u, 1u> i = {1.0, 0.0},
-                              j = {0.0, 1.0};
+constexpr std::size_t d = 2u;
 
-constexpr VF::TTensor<2u, 2u> I = i * i + j * j;
+constexpr VF::TTensor<d, 1u> i = {1.0, 0.0},
+                             j = {0.0, 1.0};
+
+constexpr VF::TTensor<d, 2u> I = i * i + j * j;
 
 constexpr double H = 0.05;
 
@@ -23,12 +25,12 @@ constexpr double ν = 0.01,
                  ξ = 1.0,
                  C = 0.005;
 
-constexpr VF::TTensor<2u, 1u> U0 = 1.0 * i;
+constexpr VF::TTensor<d, 1u> U0 = 1.0 * i;
 
-constexpr VF::TTensor<2u, 2u> A0 = 0.5 * I;
+constexpr VF::TTensor<d, 2u> A0 = I / d;
 
-constexpr double α1 = 0.5,
-                 α2 = 0.2;
+constexpr double α1 = 0.6,
+                 α2 = 0.3;
 
 // ------------------------------------------------------ Condición de contorno para U en la entrada
 
@@ -45,31 +47,36 @@ int main()
 {
 // ------------------------------------------------------------------------------------------- Malla
 
-VF::TMalla<2u>::Read("FolgarTucker.msh");
+VF::TMalla<d>::Read("FolgarTucker.msh");
 
 // ------------------------------------------------------------------------------------------ Campos
 
-VF::TCampo<2u, 0u> p;
-VF::TCampo<2u, 1u> U;
-VF::TCampo<2u, 2u> A;
-VF::TCampo<2u, 2u> τ;
+VF::TCampo<d, 0u> p;
+VF::TCampo<d, 1u> U;
+VF::TCampo<d, 2u> A;
 
 // ------------------------------------------------------------------------- Condiciones de contorno
 
 U.DefCC<TUInlet>("inlet");
 A.DefCC<VF::TDirichlet>("inlet", A0);
 U.DefCC<VF::TDirichlet>("wall");
-τ.DefCC<VF::TDirichlet>("wall");
 p.DefCC<VF::TDirichlet>("outlet");
 
 // --------------------------------------------------------------------------- Condiciones iniciales
 
-U = U0 * (1.0 - pow<2u>((VF::TMalla<2u>::C() & j) / H));
+U = U0 * (1.0 - pow<2u>((VF::TMalla<d>::C() & j) / H));
 
 A = A0;
 
 while (true)
   {
+// ------------------------------------------------------------------------------- Campos calculados
+
+  auto const γ = (grad(U) + gradT(U)) / 2.0;
+  auto const ω = (grad(U) - gradT(U)) / 2.0;
+
+  VF::TCampo const τ = 2.0 * ν * Λ * (γ && A) * A;
+
 // ---------------------------------------------------------------------------------- Momento lineal
 
   VF::TSistema const UEc = div(U * U) - ν * lap(U) == div(τ) - grad(p);
@@ -93,24 +100,19 @@ while (true)
 
 // --------------------------------------------------------------------------- Tensor de orientación
 
-  auto const γ = (grad(U) + gradT(U)) / 2.0;
-  auto const ω = (grad(U) - gradT(U)) / 2.0;
-
   VF::TSistema const AEc =
-    div(U * A) + 2.0 * ξ * (γ && A) * (+A) + 3.0 * C * mag(γ) * (+A)
+    div(U * A) + 2.0 * ξ * (γ && A) * (+A) + C * d * mag(γ) * (+A)
     ==
     (A & ω) - (ω & A) + ξ * ((A & γ) + (γ & A)) + C * mag(γ) * I;
 
   solve(AEc, A, α2);
-
-  τ = 2.0 * ν * Λ * (γ && A) * A;
   }
 
 // -------------------------------------------------------------------------------------- Resultados
 
 std::ofstream ofs("resu.vtk");
 
-VF::TMalla<2u>::Write(ofs);
+VF::TMalla<d>::Write(ofs);
 p.Write(ofs, "p");
 U.Write(ofs, "U");
 A.Write(ofs, "A");
