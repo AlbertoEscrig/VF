@@ -46,7 +46,7 @@ private:
 
   template<std::size_t... i>
   TTensor<d, r1>
-  static constexpr I(std::index_sequence<i...>)
+  static consteval I(std::index_sequence<i...>)
     { return {(i / d == i % d ? 1.0 : 0.0)...}; }
 
   template<std::size_t... i>
@@ -121,7 +121,7 @@ private:
 
 public:
   TTensor<d, r1>
-  static constexpr I() requires (r1 == 2u)
+  static consteval I() requires (r1 == 2u)
     { return I(std::make_index_sequence<d * d>{}); }
 
   TTensor<d, r1>
