@@ -14,14 +14,12 @@ jobs:
       image: gcc:latest
 
     env:
-      # FLAGS: "-O3 -std=c++23 -fmodules -fopenmp"
-      # WARNINGS: "-Wall -Wextra -pedantic"
-      FLAGS: "-O3 -std=c++23 -fmodules"
-      WARNINGS: "-Wall -Wextra -pedantic -Wno-unknown-pragmas"
+      FLAGS: "-O3 -std=c++23 -fmodules -fopenmp"
+      WARNINGS: "-Wall -Wextra -pedantic"
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Dependency
         run: apt update && apt install -y libgmsh-dev
