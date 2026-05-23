@@ -33,8 +33,6 @@ template<std::size_t d, std::size_t r>
 class TCCBase
 {
 public:
-  virtual ~TCCBase() = default;
-
   std::tuple<double, TTensor<d, r>>
   virtual Coef(TCara<d> const &) const;
 
@@ -129,6 +127,8 @@ private:
 // --------------------------------------------------------------------------------------- Funciones
 
 public:
+  TSimetria() = delete;
+
   TSimetria(TCampo<d, r> const &φ_) :
     φ(φ_) {}
 

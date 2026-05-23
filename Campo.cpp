@@ -31,30 +31,26 @@ class TCampo : public TExprBase<TCampo<d, r>>
 {
 private:
   using TTensorPtr = std::unique_ptr<TTensor<d, r>[]>;
-  using TCCPtr     = std::unique_ptr<TCCBase<d, r>>;
+  using TCC        = std::polymorphic<TCCBase<d, r>>;
 
 // ------------------------------------------------------------------------------------------- Datos
 
 private:
   std::size_t const   NCelda    = TMalla<d>::NCelda();
   TTensorPtr          TensorPtr = std::make_unique_for_overwrite<TTensor<d, r>[]>(NCelda);
-  std::vector<TCCPtr> CCPtrVec  = CCNeumann() | std::views::take(TMalla<d>::NCC())
-                                              | std::ranges::to<std::vector>();
+  std::vector<TCC>    CCVec     = std::vector<TCC>(TMalla<d>::NCC(),
+                                                   TCC(std::in_place_type<TNeumann<d, r>>));
 
 // --------------------------------------------------------------------------------------- Funciones
 
 private:
-  std::generator<TCCPtr>
-  static CCNeumann()                             // Por defecto Neumann homogénea
-    { while (true) co_yield std::make_unique<TNeumann<d, r>>(); }
-
   void
   Aplica(std::invocable<std::size_t> auto const &) const;
 
   template<typename T, typename... TArgs>
   void
   DefCC(std::false_type, std::string_view const CCStr, TArgs &&...Args)
-    { CCPtrVec[TMalla<d>::CCID(CCStr)] = std::make_unique<T>(std::forward<TArgs>(Args)...); }
+    { CCVec[TMalla<d>::CCID(CCStr)] = TCC(std::in_place_type<T>, std::forward<TArgs>(Args)...); }
 
   template<typename T, typename... TArgs>
   void
@@ -128,13 +124,13 @@ public:
 
   std::tuple<double, TTensor<d, r>>
   Coef(TCara<d> const &Cara) const
-    { return CCPtrVec[Cara.CCID]->Coef(Cara); }
+    { return CCVec[Cara.CCID]->Coef(Cara); }
 
   using TExprBase<TCampo<d, r>>::Grad;
 
   std::tuple<double, TTensor<d, r>>
   GradCoef(TCara<d> const &Cara) const
-    { return CCPtrVec[Cara.CCID]->GradCoef(Cara); }
+    { return CCVec[Cara.CCID]->GradCoef(Cara); }
 
   using TExprBase<TCampo<d, r>>::GradT;
 
